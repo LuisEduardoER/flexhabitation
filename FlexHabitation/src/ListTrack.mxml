@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" horizontalScrollPolicy="off">
+	<mx:Style source="assets/css/css.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import br.com.jfrootmaster.windows.formCadUsuario;
+			import mx.managers.PopUpManager;
+			
+			private var popup2:formCadUsuario;
+		
+		
+			
+			private function formCadMotoristasOpem():void{
+				popup2 = PopUpManager.createPopUp(this, br.com.jfrootmaster.windows.formCadUsuario, true) as formCadUsuario;
+				PopUpManager.centerPopUp(popup2);
+			}
+
+			
+		]]>
+	</mx:Script>
+	<mx:Button x="10" y="49" label="Cadastro de Motoristas" click="formCadMotoristasOpem()" width="159"/>
+	<mx:Label x="10" y="10" text="Testes" fontWeight="bold" width="230" fontSize="20"/>
+	
+</mx:Application>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onInit()">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			private function onInit():void{
+				
+				this.addEventListener(Event.CHANGE, onChange);
+				this.addEventListener(FocusEvent.FOCUS_IN, onIn);
+				this.addEventListener(FocusEvent.FOCUS_OUT, onOut);
+				this.addEventListener(FlexEvent.VALUE_COMMIT,onChange);
+				
+			}
+			
+			private var _requerido				:Boolean 			= false;
+			private var _upercase				:Boolean			= true;
+			private var _dataSource             :Object;
+			private var _dataField              :String;
+			private var _rodape					:TextImputCustom		= null;
+			private var _mensagemRodape			:String				= null;
+			
+			
+			private function onChange(e:Event):void{
+				if(this.UperCase == true){
+					this.text = this.text.toUpperCase(); 
+				}else{
+					this.text = this.text.toLowerCase(); 
+				}
+			}
+			
+			private function onOut(e:Event):void {
+				if(this.rodape != null){
+					this.rodape.text = "";
+				}
+				if(_dataSource != null && _dataSource[_dataField] != this.text){
+					this.setStyle("backgroundColor","#fefcbb");
+				}else{
+					this.setStyle("backgroundColor","#FFFFFF");
+				}
+			}
+			
+			private function onIn(e:Event):void {
+				if(_mensagemRodape != null && _rodape != null) {
+				_rodape.text = _mensagemRodape;
+				} 
+			}
+			
+			
+////*****GET'S AND SET'S*****////
+			
+		public function get Requerido():Boolean {
+			return _requerido;
+		}
+		
+		public function set Requerido(value:Boolean):void {
+			_requerido = value;
+		}
+		
+		public function get UperCase():Boolean {
+			return _upercase;
+		}
+		
+		public function set UperCase(value:Boolean):void {
+			_upercase = value;
+		}
+		
+		public function get dataSource():Object {
+			return _dataSource;
+		}
+		
+		public function set dataSource(value:Object):void {
+			_dataSource = value;
+		}
+		
+		public function get dataField():String {
+			return _dataField;
+		}
+		
+		public function set dataField(value:String):void {
+			_dataField = value;
+		}
+
+		public function get mensagemRodape():String {
+			return _mensagemRodape;
+		}
+		
+		public function set mensagemRodape(value:String):void {
+			_mensagemRodape = value;
+		}
+		public function get rodape():TextImputCustom {
+			return _rodape;
+		}
+		
+		public function set rodape(value:TextImputCustom):void {
+			_rodape = value;
+		}
+		
+		
+		
+		]]>
+	</mx:Script>
+</mx:TextInput>

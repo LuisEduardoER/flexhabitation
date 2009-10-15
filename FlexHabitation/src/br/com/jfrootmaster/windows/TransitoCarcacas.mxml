@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	creationComplete="init()">
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.ResultEvent;
+			import mx.controls.Alert;
+			import br.com.cba.modelo.VendaModelo;
+			import br.com.cba.modelo.PedidoModelo;
+			import br.com.cba.itemrenderers.GravarPedido;
+			import framework.MKGBController;
+			import framework.MKGBIController;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable] private var _sha:DropShadowFilter;
+			[Bindable] public var _datagridVendas:ArrayCollection;
+			
+			private var _cont:MKGBIController = MKGBController.getInstance("Vendas");
+			
+			private function init():void{
+				_sha = new DropShadowFilter();
+				_sha.distance = 1;
+				labelEnvio.filters = [_sha];
+				vendaListar();
+				
+				_sha = new DropShadowFilter();
+				_sha.distance = 1;
+				labelInstrucao.filters = [_sha];
+				
+			}
+			
+			public function vendaListar():void{
+				_cont.executeLocal("VendaListar", null, VendaListarResult,this, "_datagridVendas", true);
+			}
+			
+			private function VendaListarResult(e:ResultEvent):void{
+				if(e.result != null){
+					_datagridVendas = e.result as ArrayCollection;
+				}
+			}
+			
+			private function selecionarVenda():void{
+				btnLancarEnvio.enabled = true;
+			}
+			private var popup:PopupRelacaoCarcacas;
+			private function lancarEnvio():void{
+				popup = PopUpManager.createPopUp(this, br.com.cba.windows.PopupRelacaoCarcacas, true) as PopupRelacaoCarcacas;
+				popup.vendaid = datagridVendas.selectedItem.vendaid;
+				PopUpManager.centerPopUp(popup);
+			}
+			
+			private static var _instance:TransitoCarcacas;
+			public static function getInstance():TransitoCarcacas{
+				if(_instance == null){
+					_instance = new TransitoCarcacas();
+				}
+				return _instance;
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Canvas x="0" y="0" width="100%" height="100%" id="telaPrincipal">
+		
+		<mx:Label id="labelEnvio" x="10" y="10" text="Gerenciamento de Transito de Carcaças" 
+			fontSize="18" color="#FFFFFF" fontWeight="bold"/>
+		<mx:DataGrid id="datagridVendas" dataProvider="{_datagridVendas}" 
+			left="10" right="10" bottom="45" top="70" change="selecionarVenda()">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Pedido" dataField="pedido"/>
+				<mx:DataGridColumn headerText="Código Vendedor" dataField="codigo_vendedor"/>
+				<mx:DataGridColumn headerText="Nota Fiscal" dataField="nota_fiscal"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:Text id="labelInstrucao" y="44" text="Selecione uma venda e clique em 'Gerenciar Transito de Carcaças' " left="10" right="10" color="#FFFFFF"/>
+		<mx:Button id="btnLancarEnvio" label="Gerenciar Transito de Carcaças" right="10" bottom="10" enabled="false"
+			click="lancarEnvio()"/>
+	
+	</mx:Canvas>
+		
+</mx:Canvas>

@@ -1,0 +1,65 @@
+/* CSS file */
+.Application {
+   backgroundColor: #000000;
+   backgroundGradientColors: #333333, #666666;
+   backgroundGradientAlphas: 1, 1;
+   themeColor: #000000;
+   color: #000000;
+}
+
+.Panel {
+   borderStyle: solid;
+   roundedBottomCorners: true;
+   backgroundAlpha: 0.31;
+   backgroundColor: #7F7C7C;
+   titleStyleName: "mypanelTitle";
+   borderThicknessLeft: 0;
+   borderThicknessTop: 0;
+   borderThicknessBottom: 0;
+   borderThicknessRight: 0;
+   cornerRadius: 8;
+}
+
+.mypanelTitle {
+   color: #ffffff;
+	fontFamily: "Arial Black";
+	fontWeight: normal;
+}
+
+.Tree {
+   backgroundAlpha: 0;
+   backgroundColor: #000000;
+   alternatingItemColors: #ffffff, #ffffff;
+   depthColors: #000000, #000000, #000000, #000000;
+   rollOverColor: #ffffff;
+   textRollOverColor: #000000;
+   borderStyle: none;
+   selectionColor: #ffffff;
+   color: #ffffff;
+}
+@font-face
+{
+	fontFamily: "Arial Black";
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("Arial Black");
+}
+
+DataGrid {
+   backgroundAlpha: 0.7;
+   alternatingItemColors: #353535, #525151;
+   headerColors: #808080, #000000;
+   horizontalGridLines: false;
+   letterSpacing: 0;
+   verticalGridLines: false;
+   useRollOver: true;
+   color: #ffffff;
+   textIndent: 0;
+   dropShadowEnabled: true;
+   fontWeight: bold;
+	borderThickness: 0;
+	borderStyle: solid;
+}
+
+
+
