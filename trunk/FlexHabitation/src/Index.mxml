@@ -5,49 +5,54 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import mx.events.EffectEvent;
 			import mx.controls.Button;
-			import mx.effects.easing.*;
+			
 
-			
-			private function showMenuInferior(btn:Button):void{
-				if(btn.id == 'btnShow'){
-					cvMenuInferior.height = 60;
-					wipeUp.play();
-				}else{
-					wipeUp.play([cvMenuInferior], true);
-					wipeUp.addEventListener(EffectEvent.EFFECT_END,hideMenuInferior);
-				}
-			}
-			
-			private function hideMenuInferior(e:EffectEvent):void{
-				wipeUp.removeEventListener(EffectEvent.EFFECT_END, hideMenuInferior);
-				cvMenuInferior.height = 23;
-			}
-			
-			
+		private function buttonOver(a:Button):void{
+			blurBlueOut.target=a;
+			blurBlueOut.play();
+		}
+
+		private function buttonOut(a:Button):void{
+ 			blurBlueIn.target=a;
+ 			blurBlueIn.play();
+ 		}			
 			
 			
 		]]>
 	</mx:Script>
 	
-	<mx:WipeUp id="wipeUp"
-            target="{cvMenuInferior}"
-            duration="800" 
-    />
-    
-    <mx:WipeDown id="wipeDown"
-    		target="{cvMenuInferior}"
-			duration="800"
-	/>
+	<mx:Glow
+		id="blurBlueIn"  duration="700"
+		alphaFrom="1.0" alphaTo="0.0"
+		blurXFrom="0.0" blurXTo="20.0"
+		blurYFrom="0.0" blurYTo="20.0"
+		color="0X900aeef"/>
+	
+	<mx:Glow
+		id="blurBlueOut" duration="700"
+		alphaFrom="0.0" alphaTo="1.0"
+ 		blurXFrom="20.0" blurXTo="0.0"/>
+	
 	
 	<mx:ApplicationControlBar y="0" right="0" left="0">
 		<mx:Image source="assets/Icons/20X20/User.png"/>
 		<mx:Label text="Usuário" fontWeight="bold"/>
 	</mx:ApplicationControlBar>
-	<mx:Canvas height="23" bottom="0" right="10" left="10" backgroundColor="#363636" id="cvMenuInferior" borderStyle="solid" 
-		cornerRadius="10" borderColor="#000000" visible="true">
-		<mx:Button id="btnHide" x="754" y="0" label="X" click="showMenuInferior(btnHide)"/>
-		<mx:Button id="btnShow" x="10" y="0" label="Menu" click="showMenuInferior(btnShow)"/>
-	</mx:Canvas>
+	<mx:HBox right="10" left="10" horizontalGap="12" bottom="15" top="41">
+		<mx:VBox height="100%" width="270">
+			<mx:Panel width="100%" layout="absolute" styleName="PanelIndex" height="80%" title="Menu">
+			</mx:Panel>
+			<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="20%">
+			</mx:Panel>
+		</mx:VBox>
+		<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="100%">
+			<mx:Button id="add" useHandCursor="true"
+				fillColors="[#000000,#000000]" fillAlphas="0" borderColor="#525151"
+				color="#FDFBFB" themeColor="#535C75" textRollOverColor="#2667B0"
+				x="252" y="79" label="Button" width="111" height="81"
+				mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
+			/> 
+		</mx:Panel>
+	</mx:HBox>
 </mx:Application>
