@@ -1,0 +1,4 @@
+14-10-2008 10:36:04 INFO  -Inserindo registro... -br.com.cba.dao.BaseDao.create(BaseDao.java:82)
+14-10-2008 10:36:25 INFO  -Inserindo registro... -br.com.cba.dao.BaseDao.create(BaseDao.java:82)
+14-10-2008 10:44:20 INFO  -Inserindo registro... -br.com.cba.dao.BaseDao.create(BaseDao.java:82)
+14-10-2008 11:28:16 INFO  -Inserindo registro... -br.com.cba.dao.BaseDao.create(BaseDao.java:82)
