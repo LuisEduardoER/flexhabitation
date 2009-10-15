@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	showCloseButton="true" close="PopUpManager.removePopUp(this)"
+	creationComplete="init()" title="Relação de Carcaças da Venda" layout="absolute" width="852" height="566"
+	xmlns:fd="http://www.flexdev.com.br/2008/mxml" xmlns:ns1="br.com.cba.custon.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.effects.easing.Back;
+			import mx.effects.Resize;
+			import mx.controls.Alert;
+			import br.com.cba.modelo.RetornoCliModelo;
+			import br.com.cba.modelo.CorpoVendaModelo;
+			import mx.events.DataGridEvent;
+			import mx.core.Application;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import framework.MKGBIController;
+			import framework.MKGBController;
+			
+			import br.com.cba.modelo.*;
+		
+			import mx.managers.PopUpManager;
+		
+			[Bindable] private var _datagridDataprovider:ArrayCollection;
+			[Bindable] private var _produtos:ArrayCollection;
+			[Bindable] private var _datagridCarcacas:ArrayCollection;
+			
+			private var _cont:MKGBController;
+	
+			private var _vendaid:uint;
+			
+			private function init():void{
+				this.addEventListener("excluircarcaca",removeCarcaca);
+				cvTeste.visible = false;
+				cvTeste.includeInLayout = false;
+				btnSalvar.enabled = false;
+				btnSalvar.toolTip="Para habilitar esta botão a soma dos valores das carcaças recebidas tem que ser igaul ou superior a vendida.";
+				_datagridCarcacas = new ArrayCollection;
+				_cont = new MKGBController();		
+				_cont.destinationAlternativo = "CorpoVendas";
+				_cont.executeLocal("CorpoVendaListar", [_vendaid], CorpoVendaListarResult, this);
+				
+				//teste listar carcaças
+				_cont.destinationAlternativo = "Estempresas";
+				_cont.executeLocal("EstempresaListar",null, EstempresaListarResult, this);
+				
+				this.width = Application.application.screen.width - 50;
+				this.height= Application.application.screen.height - 50; 
+			}
+			
+			private function CorpoVendaListarResult(e:ResultEvent):void{
+				_datagridDataprovider = e.result as ArrayCollection;
+			}
+			
+			private function EstempresaListarResult(e:ResultEvent):void{
+				_produtos = e.result as ArrayCollection;
+				
+			}
+			
+			public function set vendaid(v:uint):void{
+				this._vendaid = v;
+			}
+					
+			private function mostraCvTeste():void{
+				cvItens.visible = true;
+				cvBuscaItens.visible = false;
+				cvTeste.visible = true;
+				cvTeste.includeInLayout = true;
+				datagridCorpoVendas1.enabled = false;
+			}
+			
+			private function mostraCvBusca():void{
+				cvItens.visible = false;
+				cvBuscaItens.visible = true;
+			}
+			private function handleSelection():void{
+				cvTeste.visible = true;
+				cvTeste.includeInLayout = true;
+				datagridCorpoVendas1.enabled = false;
+			}
+			
+			private function inserirCarcaca():void{
+				mostraCvTeste();
+				_datagridCarcacas.addItem(dgProdutos.selectedItem);
+				_datagridCarcacas.refresh();
+			}
+			
+			private function salvarCarcacasLancadas():void{
+				var lista:ArrayCollection = new ArrayCollection();
+				
+				for(var i:uint = 0; i < _datagridCarcacas.length; i++){
+					_datagridCarcacas.getItemAt(i);
+					var rc:RetornoCliModelo = new RetornoCliModelo();
+					
+					rc.codest = _datagridCarcacas.getItemAt(i).codest;
+					rc.corpovendaid = datagridCorpoVendas1.selectedItem.corpovendaid;
+					rc.numfab = _datagridCarcacas.getItemAt(i).numfab;
+					rc.qtd = _datagridCarcacas.getItemAt(i).qtd;
+					rc.valor = _datagridCarcacas.getItemAt(i).preco;
+					//rc.vltotal = _datagridCarcacas.getItemAt(i).vltotal;
+					rc.vendaid = datagridCorpoVendas1.selectedItem.vendaid;
+					
+					lista.addItem(rc);
+					
+				}
+				_cont.destinationAlternativo = "RetornoClis";
+				_cont.executeLocal("RetornoCliIncluir", [lista], retornoCliIncluirResult,this, "",true);
+			
+			}
+			
+			private function retornoCliIncluirResult(e:ResultEvent):void{	
+				saveItem();
+				_datagridCarcacas.removeAll();
+				datagridCorpoVendas1.selectedIndex = -1;
+				taComentarioRecCli.text = "";
+				cvTeste.visible = false;
+				cvTeste.includeInLayout = false;
+				laVlTotal.text = "";
+			}	
+		
+			private function teste(o:Object, c:DataGridColumn):Number {
+				somaVlCarcacas();
+				if (o.qtd != null && o.preco != null) {
+					return Number(o.qtd * o.preco);
+				} else {
+					return 0;
+				}
+			}
+			
+			private function verifReplica():void{
+				for (var i:int=0; i < dgItens.dataProvider.length; i++) {
+				   if(dgItens.dataProvider.getItemAt(i).numfab == dgProdutos.selectedItem.numfab){
+				   		Alert.show("Item Já Lançado!","Atenção");	
+				   		return;
+					}
+				}
+				
+				inserirCarcaca();
+			}	
+			
+			private function saveItem():void{
+				var cvm:CorpoVendaModelo = new CorpoVendaModelo();
+				cvm = CorpoVendaModelo(datagridCorpoVendas1.selectedItem);
+				//cvm[e.dataField] = e.currentTarget.itemEditorInstance.text;
+				cvm.comentario_responsavel_recebimento_cliente = taComentarioRecCli.text;
+				cvm.baixado = "1";
+				_cont.destinationAlternativo = "CorpoVendas";
+				_cont.executeLocal("CorpoVendaAlterar", [cvm], CorpoVendaAlterarResult, this);
+			}
+			
+			private function CorpoVendaAlterarResult(e:ResultEvent):void{
+			}
+			
+			private function somaVlCarcacas():void{
+				var vltotal:Number = 0;
+				for (var i:int=0; i < dgItens.dataProvider.length; i++) {
+			  	 vltotal += dgItens.dataProvider.getItemAt(i).qtd * dgItens.dataProvider.getItemAt(i).preco;
+				}
+					laVlTotal.text = String(vltotal);
+					laVlTotal.formatar();
+				if(vltotal >= datagridCorpoVendas1.selectedItem.pcouni ){
+					btnSalvar.enabled = true;
+					btnSalvar.toolTip="";
+				}else{
+					btnSalvar.enabled=false;
+					btnSalvar.toolTip = "Para habilitar esta botão a soma dos valores das carcaças recebidas tem que ser igaul ou superior a vendida.";
+				}
+			}		
+			
+			private function cancelaBaixa():void{
+				_datagridCarcacas.removeAll();
+				datagridCorpoVendas1.selectedIndex = -1;
+				taComentarioRecCli.text = "";
+				laVlTotal.text = "";
+				cvTeste.visible = false;
+				cvTeste.includeInLayout = false;
+				datagridCorpoVendas1.enabled = true;
+			}
+			
+			private function verificaSeBaixado():void{
+				if(datagridCorpoVendas1.selectedItem.baixado == 1){
+					Alert.show("Item Já Baixado","Atenção!!");
+					datagridCorpoVendas1.selectedIndex = -1;
+				}else{
+					handleSelection();
+				}
+			}
+			
+			private function removeCarcaca(e:Event):void {
+				_datagridCarcacas.removeItemAt(dgItens.selectedItem.index);
+				somaVlCarcacas();
+			}
+			
+///*****///FILTRO///*****///FILTRANDO LISTA DE PRODUTOS
+			  
+			private function filtrarProdutos():void{
+				_produtos.filterFunction = processarFiltro;
+				
+				_produtos.refresh();
+			}
+			
+			private function processarFiltro(item:Object):Boolean{
+				return item.numfab.match(new RegExp('^' + tiFiltroNumfab.text, 'i'));
+		
+			}
+			
+			private static var _instance:TransitoCarcacas;
+			public static function getInstance():TransitoCarcacas{
+				if(_instance == null){
+					_instance = new TransitoCarcacas();
+				}
+				return _instance;
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+	<mx:Label x="10" y="10" text="Relação dos itens da venda. Insira os valores no próprio registro" color="#ffffff"/>
+	<mx:Canvas x="0" y="246" width="100%" height="268" id="cvTeste" visible="true" styleName="PanelDatagrid"
+		showEffect="{showEffect}" hideEffect="{hideEffect}" backgroundColor="#ABABAB" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:Canvas x="0" y="0" width="100%" height="100%" id="cvItens" visible="true" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:DataGrid x="10" y="113" height="122" width="383" id="dgItens" dataProvider="{_datagridCarcacas}" editable="true">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Numfab" dataField="numfab" editable="false"/>
+					<mx:DataGridColumn headerText="QTD" dataField="qtd" width="35" editable="true"/>
+					<fd:CurrencyDataGridColumn headerText="Preço" dataField="preco" editable="false" currencyFormatter="{usdFormatter}"/>
+					<fd:CurrencyDataGridColumn headerText="Total" dataField="total" editable="false" labelFunction="teste" currencyFormatter="{usdFormatter}"/>
+					
+					<mx:DataGridColumn headerText="##" width="35" editable="false" itemRenderer="br.com.cba.itemrenderers.DataGridCustomIR2"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:Button x="401" y="114" label="Adicionar" click="mostraCvBusca()"/>
+			<mx:Label x="10" y="241" text="Total:." width="48" fontWeight="bold" color="#FFFFFF"/>
+			<mx:Button label="Salvar" click="salvarCarcacasLancadas()" id="btnSalvar" enabled="true" right="93" bottom="10"/>
+			<mx:Button label="Cancelar" click="cancelaBaixa()" right="10" bottom="10"/>
+			<mx:TextArea x="10" y="27" height="58" width="383" id="taComentarioRecCli"/>
+			<mx:Label text="Comentário Recebimento do Cliente" color="#ffffff" fontWeight="bold" x="10" y="10"/>
+			<mx:Label text="Item Recebidos Do Cliente" color="#ffffff" fontWeight="bold" x="10" y="93"/>
+			<ns1:CampoMoeda x="70" y="239" id="laVlTotal" alpha="0.0" fontWeight="bold"/>
+		</mx:Canvas>
+		<mx:Canvas id="cvBuscaItens" x="0" y="0" width="100%" height="100%" visible="false">
+			<mx:DataGrid y="57" dataProvider="{_produtos}" height="170" id="dgProdutos" doubleClick="verifReplica()" doubleClickEnabled="true"
+				verticalScrollPolicy="off" horizontalScrollPolicy="off" right="10" left="10">
+				<mx:columns>
+					<mx:DataGridColumn headerText="CodEstoque" dataField="codest"/>
+					<mx:DataGridColumn headerText="NumFab" dataField="numfab"/>
+					<fd:CurrencyDataGridColumn headerText="Preço" dataField="preco" editable="false" currencyFormatter="{usdFormatter}"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:TextInput x="10" y="27" width="476" id="tiFiltroNumfab" change="filtrarProdutos()"/>
+			<mx:Label x="10" y="10" text="Numero Carcaça" fontStyle="normal" fontWeight="bold" color="#FFFFFF"/>
+			<mx:Button label="Voltar" click="mostraCvTeste()" right="10" bottom="7"/>
+			<mx:Label text="Click Duas vezes sobre o produto Para inclui-lo " color="#FDFF54" fontWeight="bold" x="10" y="236" width="410"/>
+		</mx:Canvas>
+	</mx:Canvas>
+	<mx:VBox width="100%" height="202" verticalGap="0" paddingTop="10" y="36" id="vbConteudo">
+		<mx:Label text="Conteúdo meramente informativo" color="#ffffff" fontWeight="bold"/>
+		<mx:DataGrid width="100%" height="165" id="datagridCorpoVendas1" 
+			dataProvider="{_datagridDataprovider}" change="verificaSeBaixado()"
+			themeColor="#8D0000" color="#000000">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Qtde" dataField="quantidade" textAlign="center" editable="false" width="50" itemRenderer="br.com.cba.itemrenderers.TestItemRenderer"/>
+				<mx:DataGridColumn headerText="Cod. Estoque" dataField="codigo_estoque" textAlign="center" editable="false" width="100" itemRenderer="br.com.cba.itemrenderers.TestItemRenderer"/>
+				<mx:DataGridColumn headerText="NumFab" dataField="numfab" textAlign="center" editable="false" width="100" itemRenderer="br.com.cba.itemrenderers.TestItemRenderer"/>
+				<fd:CurrencyDataGridColumn width="100" headerText="Preço" dataField="pcouni" editable="false" itemRenderer="br.com.cba.itemrenderers.TestItemRenderer" currencyFormatter="{usdFormatter}"/>
+			</mx:columns>
+		</mx:DataGrid>	
+	</mx:VBox>
+	
+	<mx:CurrencyFormatter id="usdFormatter" precision="2"
+      currencySymbol="R$" decimalSeparatorFrom="."
+      decimalSeparatorTo="." useNegativeSign="true"
+      useThousandsSeparator="true" alignSymbol="left"/>
+	
+	<mx:Resize heightFrom="0" heightTo="300" id="showEffect" easingFunction="{Back.easeOut}"/>
+	<mx:Resize heightFrom="300" heightTo="0" id="hideEffect" easingFunction="{Back.easeIn}"/>
+	
+</mx:TitleWindow>

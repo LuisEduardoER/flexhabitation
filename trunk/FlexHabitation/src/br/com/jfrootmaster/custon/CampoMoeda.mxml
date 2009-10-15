@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" change="formatar()">
+
+<mx:Script>
+
+<![CDATA[
+		public function formatar():void {
+			this.text= numberFormatter.format(this.text);
+		}
+		
+]]>
+
+</mx:Script>
+
+<mx:CurrencyFormatter id="numberFormatter" currencySymbol="R$" precision="2"
+useThousandsSeparator="true" thousandsSeparatorTo="."
+decimalSeparatorTo=","/>
+
+</mx:TextInput>

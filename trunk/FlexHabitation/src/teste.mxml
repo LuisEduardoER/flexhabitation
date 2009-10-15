@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+layout="vertical" verticalAlign="middle"
+creationComplete="init()" xmlns:ns1="br.com.jfrootmaster.custon.*">
+
+ <mx:Script>
+ <![CDATA[
+ 	import br.com.jfrootmaster.custon.TextImputCustom;
+ 	import mx.controls.ComboBox;
+	 private function init() : void {
+ 
+   }
+   
+   public function clearForm(obj:Object):void{
+			var i:int;
+			for (i = 0; i < obj.numChildren; i ++){
+				var objeto:Object =  obj.getChildAt(i);
+				if(obj.getChildAt(i) is TextImputCustom){
+					obj.getChildAt(i).text = "";
+			  	}if(obj.getChildAt(i) is ComboBox){
+			  		obj.getChildAt(i).selectedIndex = -1;
+			  	}
+		   	  }
+		   	  /* 	btnNovo.enabled = true;
+				btnSalvar.enabled = false;
+				btnCancelar.enabled = false;
+				btnBuscar.enabled = true;
+				btnEditar.enabled = false;
+				btnExcluir.enabled = false;
+				btnSair.enabled = true;
+				lbInfo.setStyle("color" , "Black");
+				lbInfo.text = ""; */
+			}
+			
+ ]]>
+ </mx:Script>
+  <mx:XML id="itemsXML">
+     <items>
+         <item name="Item 1" state="1" />
+         <item name="Item 2" state="0" />
+         <item name="Item 3" state="0" />
+         <item name="Item 4" state="1" />
+         <item name="Item 5" state="0" />
+     </items>
+ </mx:XML>
+ <ns1:TextImputCustom/>
+ <ns1:TextImputCustom/>
+ <mx:ComboBox id="combo01" dataProvider="{itemsXML.item}" labelField="@name" prompt="vmvbnm"></mx:ComboBox>
+ <mx:Button label="Button" click="clearForm(this)"/>
+
+</mx:Application>

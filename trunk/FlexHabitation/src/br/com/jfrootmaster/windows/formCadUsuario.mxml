@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="706" height="478"
+	creationComplete="onInit()" styleName="TitleWindow" xmlns:ns1="br.com.jfrootmaster.custon.*">
+	
+	<!--Setando O Estilo da pagina -->
+	<mx:Style source="assets/css/css.css"/>
+	
+	<!--Começando o escript de programação-->
+	<mx:Script>
+	
+		<![CDATA[
+			import br.com.jfrootmaster.modelo.Cadastro.CadUsuarioModelo;
+			import br.com.jfrootmaster.modelo.Cadastro.CadStatusUsuarioModelo;
+			import flash.utils.getTimer;
+		
+			//Import's
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import framework.MKGBController;
+			import mx.managers.PopUpManager;
+			import mx.skins.Border;
+			import br.com.jfrootmaster.custon.TextImputCustom;
+			import mx.controls.ComboBox;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import br.com.jfrootmaster.dataprovider.RepositorioDataProviders;
+			import br.com.jfrootmaster.custon.TextAreaCustom;
+			
+			//Variaveis
+			private var _cont:MKGBController;
+			private var date:Date = new Date();
+
+			[Bindable]
+			private var dataSet:ArrayCollection;
+			
+			[Bindable]
+			private var _dados:RepositorioDataProviders =  RepositorioDataProviders.getInstance();
+			
+			[Bindable]
+			private var StatusUser:ArrayCollection;
+			
+			[Bindable]
+			private var KeyMessenger:ArrayCollection;
+			
+			[Bindable]
+			private var CepEncontrado:ArrayCollection;
+			
+			[Bindable]
+			private var Position:ArrayCollection;
+			
+////////////////////////////Inicio das Funções/////////////////////////////////
+			
+		//Função Inicial
+		private function onInit():void{
+			dataSet = new ArrayCollection;
+			_cont = new MKGBController();  
+			clearForm(CanvasForm1);
+			clearForm(CanvasForm2);
+			clearForm(CanvasForm3);  
+			tnUser.enabled = false;
+			onClickNovo(); 
+			
+			this.addEventListener("onEditar",onEditar);
+			this.addEventListener("onExcluir",onExcluir);
+			
+			_cont.destinationAlternativo = "Cadastro";
+			_cont.executeLocal("CadStatusUsuarioListar", [], onAfterCadStatusUserListar,this, "StatusUser",true);
+				
+			_cont.destinationAlternativo = "Cadastro";
+			_cont.executeLocal("CadMensagemChaveListar", [], onAfterCadKeyMessengerListar,this, "KeyMessenger",true);
+				
+			_cont.destinationAlternativo = "Cadastro";
+			_cont.executeLocal("CadCargoListar", [], onAfterCadPositionListar,this, "CadPosition",true);
+		}
+		
+		private function onAfterCadPositionListar(e:ResultEvent):void{
+			Position = e.result as ArrayCollection;
+		}
+		
+		private function onAfterCadKeyMessengerListar(e:ResultEvent):void{
+			KeyMessenger = e.result as ArrayCollection;
+		}
+		
+		private function onAfterCadStatusUserListar(e:ResultEvent):void{
+			StatusUser = e.result as ArrayCollection;
+		}
+			
+		//Função para limpar os campos do formulario
+		private function clearForm(obj:Object):void{
+			var i:int;
+			for (i = 0; i < obj.numChildren; i ++){
+				var objeto:Object =  obj.getChildAt(i);
+				if(obj.getChildAt(i) is TextImputCustom){
+					obj.getChildAt(i).text = "";
+					obj.getChildAt(i).setStyle("borderColor","#b7babc");
+					obj.getChildAt(i).setStyle("border","inset");
+			  	}
+			  	if(obj.getChildAt(i) is ComboBox){
+			  		obj.getChildAt(i).selectedIndex = -1
+			  		obj.getChildAt(i).setStyle("borderColor","#b7babc");
+			  	}
+			  	if(obj.getChildAt(i) is TextAreaCustom){
+			  		obj.getChildAt(i).text = ""
+			  		obj.getChildAt(i).setStyle("borderColor","#b7babc");
+			  		obj.getChildAt(i).setStyle("border","inset");
+			  	}
+		   	  }
+		   	  	tnUser.enabled         = true;  
+		   	  	btnNovo.enabled        = true;  
+				btnSalvar.enabled      = false;   
+				btnCancelar.enabled    = false;  
+				btnBuscar.enabled      = true;            
+				lbInfo.text            = "";       
+				lbInfo.setStyle("color" , "Black");
+		}
+			
+		//Função que Valida os campos obrigatorios
+		private function validate(obj:Object):void{
+			var i:int;
+			var i2:int;
+			var camposvazios:int = 0;
+			for (i = 0; i < obj.numChildren; i ++){
+				var objeto:Object =  obj.getChildAt(i);
+			for (i2 = 0;i2 < objeto.numChildren; i2 ++){
+				if(objeto.getChildAt(i2) is TextImputCustom){
+					if (objeto.getChildAt(i2).Requerido == true && objeto.getChildAt(i2).text == '') {
+						validation(objeto.getChildAt(i2)); //aciona validation para exibir a mensagem de alerta ao usuario.
+						objeto.getChildAt(i2).setStyle("borderColor","Red"); //seta o estilo dos campos obrigatorios vazios.
+						camposvazios ++; //conta os campos requeridos vazios.
+					}else{
+						objeto.getChildAt(i2).setStyle("borderColor","#b7babc"); //seta o estilo dos campos obrigatorios nao preenchidos. 
+						objeto.getChildAt(i2).setStyle("border","inset");
+					}
+					
+			  	}else if(objeto.getChildAt(i2) is ComBoxCustom){
+					if (objeto.getChildAt(i2).Requerido == true && objeto.getChildAt(i2).selectedIndex == -1) {
+						validation(objeto.getChildAt(i2)); //aciona validation para exibir a mensagem de alerta ao usuario.
+						objeto.getChildAt(i2).setStyle("borderColor","Red"); //seta o estilo dos campos obrigatorios vazios.
+						camposvazios ++; //conta os campos requeridos vazios.
+					}else{
+						objeto.getChildAt(i2).setStyle("borderColor","#b7babc"); //seta o estilo dos campos obrigatorios nao preenchidos. 
+						objeto.getChildAt(i2).setStyle("border","inset");
+					}
+		   		}
+		   	}
+		}
+		   	if(camposvazios == 0){ //quando nao tiver mais campos obrigatorios vazios.
+		   		insertOrUpdate();  //aciona insertorupdate para verificar se vai inserir ou fazer um update no banco.
+		   	}
+		}
+		
+		//Função aonde retorna alert ou mensagem com o nome do campo requerido que ficou em branco.
+		//OBS no caso nao estamos usando pq estamos colocando o campo requerido e nao preenchido com a borda em vermelho.
+		private function validation(campo:Object):void {
+			/* var strNomeCampo:String;
+			strNomeCampo = campo.NomeCampo;
+			campo.setFocus(); */ 
+			
+			lbInfo.setStyle("color" , "Red"); //seta estilo do label.
+			lbInfo.text = "O campo em vermelho não pode ficar vazio."; //exibe mensagem ao usuario.
+		}
+		
+		//Função para verificar se insere ou altera os itens do banco
+		private function insertOrUpdate():void{
+			if(dataGrid.selectedIndex > -1){ //se o datagrid estiver selecionado entao chama a funçao de update.
+				onUpdate(); //chama a função de update.
+			}else{
+				onInsert(); //chama a função de insert.
+		   	}
+		}
+		
+		//Função que insere os itens no banco	
+		private function onInsert():void{
+			if(tiSenha.text == tiConfirmaSenha.text){
+			var cum:CadUsuarioModelo          = new CadUsuarioModelo();
+				cum.endereco  	              = tiRua.text;
+				cum.resposta_mensagem_chave   = tiRespostaKeyMessenger.text;
+				cum.celular 				  = tiCelular.text;
+				cum.cidade 				      = tiCidade.text;
+				cum.pais 			          = tiPais.text;
+				cum.cpf						  = tiCpf.text;
+				cum.data_cadastro			  = new Date();
+				cum.nome				      = tiNome.text;
+				cum.id_mensagem_chave         = cmbKeyMessenger.selectedItem.id_mensagem_chave;
+				cum.id_cargo 			      = cmbCargo.selectedItem.id_cargo; 
+				cum.id_status_usuario		  = cmbStatusUser.selectedItem.id_status_usuario;
+				cum.sobrenome 				  = tiSobrenome.text;
+				cum.nick 					  = tiNick.text;
+				cum.numero					  = tiNumero.text;
+				cum.senha				      = tiSenha.text;
+				cum.telefone				  = tiTelefone.text;
+				cum.bairro					  = tiBairro.text;
+				cum.rg						  = tiRg.text;
+				cum.source_foto			      = '\assets\teste\fotoUsers';
+				cum.estado					  = tiEstado.text;
+				cum.cep				          = tiCep.text;
+				cum.inativo					  = '1'; // provisorio ate implantar o form
+				cum.ramal 					  = tiRamal.text;
+				
+				//insere items no banco
+				_cont.destinationAlternativo = "Cadastro";
+				_cont.executeLocal("CadUsuarioIncluir", [cum], onAfterInserir,this, "dataSet",true);
+			}else{
+				Alert.show('As senhas não conferem!!','Atenção');
+			}
+		}
+		
+		//Função result do insert	
+		private function onAfterInserir(e:ResultEvent):void{
+			tiId.text = e.result.id_usuario;
+			lbInfo.setStyle("color" , "Black"); //seta estilo do label.
+			lbInfo.text = "Item Inserido com sucesso!"; // exibe mensagem ao usuario.
+			
+			btnNovo.enabled 		= true;
+			btnSalvar.enabled 		= false;
+			btnCancelar.enabled 	= true;
+			btnBuscar.enabled 		= true;
+		}
+		
+		//Função que altera os itens no banco	
+		private function onUpdate():void{
+			if(tiSenha.text == tiConfirmaSenha.text){
+			var cum:CadUsuarioModelo        = new CadUsuarioModelo();
+				cum 					    = CadUsuarioModelo(dataGrid.selectedItem);
+				cum.endereco  	              = tiRua.text;
+				cum.resposta_mensagem_chave   = tiRespostaKeyMessenger.text;
+				cum.celular 				  = tiCelular.text;
+				cum.cidade 				      = tiCidade.text;
+				cum.pais 			          = tiPais.text;
+				cum.cpf						  = tiCpf.text;
+				cum.data_cadastro			  = new Date();
+				cum.nome				      = tiNome.text;
+				cum.id_mensagem_chave         = cmbKeyMessenger.selectedItem.id_key_messenger;
+				cum.id_cargo 			      = cmbCargo.selectedItem.id_position; 
+				cum.id_status_usuario		  = cmbStatusUser.selectedItem.id_status_user;
+				cum.sobrenome 				  = tiSobrenome.text;
+				cum.nick 					  = tiNick.text;
+				cum.numero					  = tiNumero.text;
+				cum.senha				      = tiSenha.text;
+				cum.telefone				  = tiTelefone.text;
+				cum.bairro					  = tiBairro.text;
+				cum.rg						  = tiRg.text;
+				cum.source_foto			      = '\assets\teste\fotoUsers';
+				cum.estado					  = tiEstado.text;
+				cum.cep				          = tiCep.text;
+				cum.inativo					  = '1'; // provisorio ate implantar o form
+				cum.ramal 					  = tiRamal.text;
+				
+				//Função update dos itens no Banco
+				_cont.destinationAlternativo = "Cadastro";
+				_cont.executeLocal("CadUsuarioAlterar", [cum], onAfterUpdate,this, "dataSet",true);
+			}else{
+				Alert.show('As senhas não conferem!!','Atenção');
+			}	
+			
+		}
+		
+		private function onAfterUpdate(e:ResultEvent):void{
+			btnNovo.enabled 		= true;
+			btnSalvar.enabled 		= false;
+			btnCancelar.enabled 	= true;
+			btnBuscar.enabled 		= true;
+			
+			lbInfo.setStyle("color" , "Black");
+			lbInfo.text = "Alteração Efetuada Com Sucesso!";
+			
+			//lista depois da alteração
+			_cont.destinationAlternativo = "Cadastro";
+			_cont.executeLocal("CadUsuarioListar",[],onAfterListar,this,"dataSet",true);
+		}
+			
+		
+		//Função listar itens do banco	
+		private function onlist():void{
+			/* CanvasForm.visible          = false;
+			CanvasForm.includeInLayout  = false; */
+			tnUser.visible          = false;
+			tnUser.includeInLayout  = false;
+			
+			CanvasDg.visible          	= true;
+			CanvasDg.includeInLayout  	= true;
+			
+			lbInfo.setStyle("color" , "Black");
+			lbInfo.text = "";
+			
+			btnNovo.enabled 			= true;
+			btnSalvar.enabled 			= false;
+			btnCancelar.enabled 		= false;
+			btnBuscar.enabled 			= false;
+			
+			//Executa busca no Banco
+			_cont.destinationAlternativo = "Cadastro";
+			_cont.executeLocal("CadUsuarioListar",[],onAfterListar,this,"dataSet",true);
+		}
+			
+		private function onAfterListar(e:ResultEvent):void{
+			dataSet = e.result as ArrayCollection;
+		}
+			
+		private function onEditar(e:Event):void {
+			if(dataGrid.selectedItem != null){
+				lbInfo.setStyle("color" , "Black");
+				lbInfo.text = "";
+				
+				/* CanvasForm.enabled 			= true;
+				CanvasForm.visible          = true;
+				CanvasForm.includeInLayout  = true; */
+				tnUser.enabled 			= true;
+				tnUser.visible          = true;
+				tnUser.includeInLayout  = true;
+			
+				CanvasDg.visible          	= false;
+				CanvasDg.includeInLayout  	= false;
+				
+				btnNovo.enabled 			= false;
+				btnSalvar.enabled 			= true;
+				btnCancelar.enabled 		= true;
+				btnBuscar.enabled 			= false;
+			
+				//preenche os campos com os dados vindos do datagrid
+				tiId.text = dataGrid.selectedItem.id_usuario;
+				tiRua.text = dataGrid.selectedItem.endereco;
+				tiRespostaKeyMessenger.text = dataGrid.selectedItem.resposta_mensagem_chave;
+				tiCelular.text = dataGrid.selectedItem.celular;
+				tiCidade.text = dataGrid.selectedItem.cidade;
+				tiEstado.text = dataGrid.selectedItem.estado;
+				tiCpf.text = dataGrid.selectedItem.cpf;
+				tiNome.text = dataGrid.selectedItem.nome;
+				cmbKeyMessenger.selecionarItemDoCombo(dataGrid.selectedItem.id_mensagem_chave);
+				cmbCargo.selecionarItemDoCombo(dataGrid.selectedItem.id_cargo);
+				cmbStatusUser.selecionarItemDoCombo(dataGrid.selectedItem.id_status_usuario);
+				tiSobrenome.text = dataGrid.selectedItem.sobrenome;
+				tiNick.text = dataGrid.selectedItem.nick;
+				tiNumero.text = dataGrid.selectedItem.numero;
+				tiSenha.text = dataGrid.selectedItem.senha;
+				tiConfirmaSenha.text = dataGrid.selectedItem.senha;
+				tiTelefone.text = dataGrid.selectedItem.telefone;
+				tiBairro.text = dataGrid.selectedItem.bairro;
+				tiRg.text = dataGrid.selectedItem.rg;
+				tiCep.text = dataGrid.selectedItem.cep;
+				tiPais.text = dataGrid.selectedItem.pais;
+				tiRamal.text = dataGrid.selectedItem.ramal;
+				
+			}else{
+				lbInfo.setStyle("color" , "Red");
+				lbInfo.text = "Favor Selecionar Um Registro Para Editar";
+			}
+		}
+			
+			
+			
+		private function onExcluir(e:Event):void {
+			if(dataGrid.selectedItem != null){
+				lbInfo.setStyle("color" , "Black");
+				lbInfo.text = "";
+				
+				Alert.yesLabel = "Sim";
+				Alert.noLabel = "Não";
+				Alert.show("Confirma exclusão definitiva?","Exclusão", Alert.YES | Alert.NO ,this, resultExcluir);
+			}else{
+				lbInfo.setStyle("color" , "Red");
+				lbInfo.text = "Favor Selecionar Um Registro Para Excluir";
+			}
+		}
+		
+		public function resultExcluir(event:CloseEvent):void{
+			if (event.detail == Alert.YES){
+				//executa exclusao no banco
+				_cont.destinationAlternativo = "Cadastro";
+				_cont.executeLocal("CadUsuarioExcluir",[dataGrid.selectedItem.id_usuario],onAfterExcluir,this,"dataSet",true);
+			}
+		}
+			
+		private function onAfterExcluir(e:ResultEvent):void{
+			//lista depois de excluir
+			_cont.destinationAlternativo = "Cadastro";
+			_cont.executeLocal("CadUsuarioListar",[],onAfterListar,this,"dataSet",true);
+		}
+		
+		//Função novo registro
+		private function onClickNovo():void {
+			clearForm(CanvasForm1);
+			clearForm(CanvasForm2);
+			clearForm(CanvasForm3); 
+			dataGrid.selectedIndex      = -1;
+			
+			/* CanvasForm.enabled          = true;
+			CanvasForm.visible          = true;
+			CanvasForm.includeInLayout  = true; */
+			
+			tnUser.enabled          = true;
+			tnUser.visible          = true;
+			tnUser.includeInLayout  = true; 
+			
+			CanvasDg.visible            = false;
+			CanvasDg.includeInLayout    = false;
+			
+			lbInfo.setStyle("color" , "Black");
+			lbInfo.text                 = "";
+			
+			btnNovo.enabled 			= false;
+			btnSalvar.enabled 			= true;
+			btnCancelar.enabled 		= true;
+			btnBuscar.enabled 			= false;
+		}
+		
+		private function onClickSave():void{
+			validate(tnUser);
+			/* validate(CanvasForm2);
+			validate(CanvasForm3); */
+		}
+		
+		private function onClickCancel():void{
+			clearForm(CanvasForm1);
+			clearForm(CanvasForm2);
+			clearForm(CanvasForm3);
+		}
+		
+		private function onLocalizaCep():void{
+			_cont.destinationAlternativo = "Cadastro";
+			_cont.executeLocal("CadCepLocalizar",[tiCep.text],onAfterCadCepLocalizar,this,"CepEncontrado",true);
+		}
+		
+		private function onAfterCadCepLocalizar(e:ResultEvent):void{
+			tiRua.text = e.result[0].logradouro + " " + e.result[0].rua;
+			tiCidade.text  = e.result[0].cidade;
+			tiEstado.text  = e.result[0].estado;
+			tiPais.text  = e.result[0].pais;
+			tiBairro.text  = e.result[0].bairro;
+		}
+			
+		]]>
+	</mx:Script>
+	<mx:DateFormatter id="_dfFormatador" formatString="DD/MM/YYYY J:NN:SS"  />
+	
+	<mx:HBox height="64" left="10" right="10" top="10">
+		<mx:Button id="btnNovo" label="Novo" height="100%" width="75" click="onClickNovo()" labelPlacement="bottom">
+			<mx:icon>@Embed(source='../../../../assets/Icons/Icons 32X32/new.png')</mx:icon>
+		</mx:Button>
+		<mx:Button id="btnSalvar" label="Salvar" height="100%" click="onClickSave()" icon="@Embed(source='../../../../assets/Icons/Icons 32X32/accept.png')" labelPlacement="bottom" width="75"/>
+		<mx:Button id="btnCancelar" label="Cancelar" height="100%" click="onClickCancel()" labelPlacement="bottom" width="75">
+			<mx:icon>@Embed(source='../../../../assets/Icons/Icons 32X32/cancel.png')</mx:icon>
+		</mx:Button>
+		<mx:Button id="btnBuscar" label="Buscar" height="100%" click="onlist()" labelPlacement="bottom" width="75">
+			<mx:icon>@Embed(source='../../../../assets/Icons/Icons 32X32/search.png')</mx:icon>
+		</mx:Button>
+	</mx:HBox>
+	<mx:Canvas id="CanvasDg" x="0" y="73" width="100%" height="310" visible="false" top="82" left="0" bottom="29" styleName="DataGrid">
+		<mx:DataGrid id="dataGrid" dataProvider="{this.dataSet}" y="0" height="100%" right="10" left="10"
+			doubleClickEnabled="true">
+			<mx:columns>
+				<mx:DataGridColumn headerText="ID" dataField="id_usuario" width="50"/>
+				<mx:DataGridColumn headerText="Nome" dataField="nome" width="150"/>
+				<mx:DataGridColumn headerText="Nick" dataField="nick"/>
+				<mx:DataGridColumn headerText="##" width="35" itemRenderer="br.com.jfrootmaster.itemrenderers.IrEditar"/>
+				<mx:DataGridColumn headerText="##" width="35" itemRenderer="br.com.jfrootmaster.itemrenderers.IrExcluir"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:Canvas>
+	<mx:Canvas height="21" right="10" left="10" borderStyle="solid" borderColor="#000000" cornerRadius="6" bottom="5">
+		<mx:Label id="lbInfo" text="Info" textAlign="center" fontWeight="bold" fontSize="11" height="100%" bottom="0" left="0" right="0"/>
+	</mx:Canvas>
+	<mx:TabNavigator right="10" bottom="29" top="82" left="10" backgroundAlpha="0.0" id="tnUser" color="#FFFFFF" cornerRadius="8" borderColor="#000000" backgroundColor="#A7A4A4">
+		<mx:Canvas label="Dados Funcionario" width="100%" height="100%" backgroundAlpha="1.0" alpha="1.0" id="CanvasForm1">
+			<ns1:TextImputCustom x="10" y="29" width="89" editable="false" id="tiId" color="#000000"/>
+			<ns1:TextImputCustom x="10" y="80" width="249" id="tiNome" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="10" text="ID" fontWeight="bold"/>
+			<mx:Label x="10" y="62" text="Nome" fontWeight="bold"/>
+			<ns1:TextImputCustom x="10" y="128" width="179" id="tiRg" Requerido="true" color="#000000"/>
+			<ns1:TextImputCustom x="197" y="128" width="179" id="tiCpf" Requerido="true" color="#000000"/>
+			<mx:Label x="197" y="110" text="CPF" fontWeight="bold"/>
+			<mx:Label x="10" y="110" text="RG" fontWeight="bold"/>
+			<ns1:TextImputCustom x="10" y="176" width="207" id="tiTelefone" Requerido="true" color="#000000"/>
+			<ns1:TextImputCustom x="225" y="176" width="207" id="tiCelular" Requerido="true" color="#000000"/>
+			<ns1:TextImputCustom x="440" y="176" width="122" id="tiRamal" Requerido="true" color="#000000"/>
+			<mx:Label x="225" y="158" text="Celular" fontWeight="bold"/>
+			<mx:Label x="440" y="158" text="Ramal" fontWeight="bold"/>
+			<mx:Label x="10" y="158" text="Telefone" fontWeight="bold"/>
+			<mx:Label x="10" y="206" text="Cargo" fontWeight="bold"/>
+			<ns1:TextImputCustom x="267" y="80" width="407" id="tiSobrenome" Requerido="true" color="#000000"/>
+			<mx:Label x="267" y="62" text="Sobrenome" fontWeight="bold"/>
+			<ns1:ComBoxCustom x="10" y="225" width="310" id="cmbCargo" dataProvider="{Position}" labelField="cargo" ComboKey="id_cargo" color="#000000"
+				prompt="Selecione o Cargo"></ns1:ComBoxCustom>
+		</mx:Canvas>
+		<mx:Canvas label="Dados Residencia" width="100%" height="100%" id="CanvasForm2">
+			<ns1:TextImputCustom x="10" y="67" width="570" id="tiRua" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="49" text="Rua" fontWeight="bold" />
+			<ns1:TextImputCustom x="10" y="18" width="155" id="tiCep" Requerido="true" color="#000000"/>
+			<ns1:TextImputCustom x="10" y="115" width="186" id="tiBairro" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="97" text="Bairro" fontWeight="bold"/>
+			<ns1:TextImputCustom x="204" y="115" width="307" id="tiCidade" Requerido="true" color="#000000"/>
+			<mx:Label x="204" y="97" text="Cidade" fontWeight="bold"/>
+			<ns1:TextImputCustom x="10" y="163" width="44" id="tiEstado" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="145" text="Estado" fontWeight="bold"/>
+			<ns1:TextImputCustom x="62" y="163" width="193" id="tiPais" Requerido="true" color="#000000"/>
+			<mx:Label x="62" y="145" text="Pais" fontWeight="bold"/>
+			<mx:Label x="10" y="0" text="CEP" fontWeight="bold" />
+			<ns1:TextImputCustom x="588" y="67" width="86" id="tiNumero" Requerido="true" color="#000000"/>
+			<mx:Label x="588" y="49" text="Numero" fontWeight="bold"/>
+			<mx:Button x="173" y="18" label="Localizar" click="onLocalizaCep()"/>
+		</mx:Canvas>
+		<mx:Canvas label="Dados Usurio" width="100%" height="100%" id="CanvasForm3">
+			<ns1:TextImputCustom x="10" y="28" width="249" id="tiNick" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="10" text="Nick" fontWeight="bold"/>
+			<ns1:TextImputCustom x="10" y="76" width="249" id="tiSenha" Requerido="true" displayAsPassword="true" color="#000000"/>
+			<mx:Label x="10" y="58" text="Senha" fontWeight="bold"/>
+			<ns1:TextImputCustom x="10" y="170" width="393" id="tiRespostaKeyMessenger" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="152" text="Resposta" fontWeight="bold"/>
+			<mx:Label x="10" y="106" text="Key Messenger" fontWeight="bold"/>
+			<ns1:TextImputCustom x="267" y="76" width="249" id="tiConfirmaSenha" Requerido="true" displayAsPassword="true" color="#000000"/>
+			<mx:Label x="267" y="58" text="Confirma Senha" fontWeight="bold"/>
+			<ns1:ComBoxCustom x="10" y="122" width="506" id="cmbKeyMessenger" dataProvider="{KeyMessenger}" labelField="mensagem_chave" ComboKey="id_mensagem_chave" color="#000000"
+				prompt="Selecione Mensagem Chave"></ns1:ComBoxCustom>
+			<mx:Label x="267" y="10" text="Status Usuario" fontWeight="bold"/>
+			<ns1:ComBoxCustom x="267" y="26" width="327" id="cmbStatusUser" dataProvider="{StatusUser}" labelField="status_usuario" ComboKey="id_status_usuario" color="#000000"
+				prompt="Selecione Status do Usuario"></ns1:ComBoxCustom>
+		</mx:Canvas>
+	</mx:TabNavigator>
+	
+</mx:Canvas>

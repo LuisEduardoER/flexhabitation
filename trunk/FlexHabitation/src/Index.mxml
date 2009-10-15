@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+
+	<mx:Style source="assets/css/css.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.EffectEvent;
+			import mx.controls.Button;
+			import mx.effects.easing.*;
+
+			
+			private function showMenuInferior(btn:Button):void{
+				if(btn.id == 'btnShow'){
+					cvMenuInferior.height = 60;
+					wipeUp.play();
+				}else{
+					wipeUp.play([cvMenuInferior], true);
+					wipeUp.addEventListener(EffectEvent.EFFECT_END,hideMenuInferior);
+				}
+			}
+			
+			private function hideMenuInferior(e:EffectEvent):void{
+				wipeUp.removeEventListener(EffectEvent.EFFECT_END, hideMenuInferior);
+				cvMenuInferior.height = 23;
+			}
+			
+			
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:WipeUp id="wipeUp"
+            target="{cvMenuInferior}"
+            duration="800" 
+    />
+    
+    <mx:WipeDown id="wipeDown"
+    		target="{cvMenuInferior}"
+			duration="800"
+	/>
+	
+	<mx:ApplicationControlBar y="0" right="0" left="0">
+		<mx:Image source="assets/Icons/20X20/User.png"/>
+		<mx:Label text="Usuário" fontWeight="bold"/>
+	</mx:ApplicationControlBar>
+	<mx:Canvas height="23" bottom="0" right="10" left="10" backgroundColor="#363636" id="cvMenuInferior" borderStyle="solid" 
+		cornerRadius="10" borderColor="#000000" visible="true">
+		<mx:Button id="btnHide" x="754" y="0" label="X" click="showMenuInferior(btnHide)"/>
+		<mx:Button id="btnShow" x="10" y="0" label="Menu" click="showMenuInferior(btnShow)"/>
+	</mx:Canvas>
+</mx:Application>

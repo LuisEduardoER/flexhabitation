@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ComboBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			
+			private var _label			        :String;
+			private var _ComboKey		        :String;
+			private var _requerido				:Boolean 			= false;
+			
+			
+			
+			public function selecionarItemDoCombo ( Label:String ):Object {
+				for(var i:uint = 0; i < dataProvider.length; i++){
+					if(dataProvider[i][_ComboKey] == Label){
+						this.selectedIndex = i;
+						}		
+					}
+				return null;
+			}
+			
+						
+////*****GET'S AND SET'S*****////
+			
+		public function get Label():String {
+			return _label;
+		}
+		
+		public function set Label(value:String):void {
+			_label = value;
+		}
+
+		public function get Requerido():Boolean {
+			return _requerido;
+		}
+		
+		public function set Requerido(value:Boolean):void {
+			_requerido = value;
+		}
+		
+		public function get ComboKey():String {
+			return _ComboKey;
+		}
+		
+		public function set ComboKey(value:String):void {
+			_ComboKey = value;
+		}
+		]]>
+	</mx:Script>
+</mx:ComboBox>

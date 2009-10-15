@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="26" height="24">
+	<mx:Script>
+		<![CDATA[
+			
+			 public function excluircarcacas():void{
+				dispatchEvent(new Event("excluircarcaca",true,true));
+			} 
+
+		]]>
+	</mx:Script>
+	<mx:Image x="5" y="4" source="assets/Icons/16x16/Trash-Full.png" buttonMode="true" click="excluircarcacas()" toolTip="Exluir Carcaça"/>
+</mx:Canvas>

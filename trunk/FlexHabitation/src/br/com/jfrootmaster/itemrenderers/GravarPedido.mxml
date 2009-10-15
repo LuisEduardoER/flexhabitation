@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="init()" width="100%" height="100%">
+	
+	<mx:Script>
+		<![CDATA[
+			import br.com.cba.modelo.CorpoVendaModelo;
+			import br.com.cba.modelo.CorpoModelo;
+			import mx.rpc.events.ResultEvent;
+			import br.com.cba.modelo.VendaModelo;
+			import mx.collections.ArrayCollection;
+			import framework.MKGBIController;
+			import framework.MKGBController;
+			import br.com.cba.modelo.PedidoModelo;
+			
+			[Bindable] private var _sha:DropShadowFilter;
+			[Bindable] private var _pedido:PedidoModelo;
+			[Bindable] public var _datagrid:ArrayCollection;
+			
+			private var _cont:MKGBIController = MKGBController.getInstance("Corpos");
+			
+			private function init():void{
+				_sha = new DropShadowFilter();
+				_sha.distance = 1;
+				_sha.alpha = 0.4;
+				labelTitulo.filters = [_sha];
+				datagrid.filters = [_sha];
+				labelItensPedido.filters = [_sha];
+				
+				_cont.execute("CorpoListar", [_pedido.pedido], this, "_datagrid", true);
+
+			}
+			
+			public function set pedido(v:PedidoModelo):void{
+				this._pedido = v;
+			}
+			
+			public function voltar():void{
+				dispatchEvent(new Event('voltar', true, true));
+			}
+			
+			private function finalizar():void{
+				var v:VendaModelo = new VendaModelo();
+				v.codigo_cliente = _pedido.codCli;
+				v.codigo_usuario = "1";
+				v.codigo_vendedor = _pedido.codVend;
+				v.data_nota_fiscal = _pedido.dtFiscal;
+				v.nota_fiscal = _pedido.nrNota;
+				v.pedido = _pedido.pedido;
+
+				var _contVenda:MKGBIController = MKGBController.getInstance("Vendas");
+				_contVenda.executeLocal("VendaIncluir", [v], finalizarResult, this, "", true);
+				
+			}
+			
+			private function finalizarResult(e:ResultEvent):void{
+				var _contCorpoVenda:MKGBIController = MKGBController.getInstance("CorpoVendas");
+				var lista:ArrayCollection = new ArrayCollection();
+				
+				for(var i:uint = 0; i < _datagrid.length; i++){
+					var d:CorpoModelo = _datagrid.getItemAt(i) as CorpoModelo;
+					var cv:CorpoVendaModelo = new CorpoVendaModelo();
+					
+					cv.codigo_estoque = d.codEst;
+					cv.numfab = d.numFab;
+					cv.codigo_usuario = "1";
+					cv.quantidade = d.qtd;
+					cv.pcouni = d.pcouni;
+					cv.vendaid = e.result.vendaid;
+					
+					lista.addItem(cv);
+					
+				}
+				
+				_contCorpoVenda.executeLocal("CorpoVendaIncluir", [e.result.vendaid,lista], corpoVendaIncluirResult, this, "", true);
+			}
+			
+			private function corpoVendaIncluirResult(e:ResultEvent):void{
+				if(e.result is ArrayCollection){
+					dispatchEvent(new Event('vendaInseridaSucesso', true, true));
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Label id="labelTitulo" x="10" y="10" text="Pedido Selecionado" fontSize="14" fontWeight="bold" color="#FFFFFF"/>
+	<mx:VBox left="10" top="40" right="10" height="150" styleName="PanelDatagrid"
+		paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" color="#ffffff" 
+		verticalGap="0">
+		
+		<mx:HBox width="100%">
+			<mx:Label text="Cliente:"/>
+			<mx:Label text="{_pedido.cliente}" fontWeight="bold"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:Label text="Cod. Cliente:"/>
+			<mx:Label text="{_pedido.codCli}" fontWeight="bold"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:Label text="Cod. Empresa:"/>
+			<mx:Label text="{_pedido.codEmpresa}" fontWeight="bold"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:Label text="Cod. Vendedor:"/>
+			<mx:Label text="{_pedido.codVend}" fontWeight="bold"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:Label text="Nr. Nota:"/>
+			<mx:Label text="{_pedido.nrNota}" fontWeight="bold"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:Label text="Dt. Fiscal:"/>
+			<mx:Label text="{_pedido.dtFiscal}" fontWeight="bold"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:Label text="Pedido:"/>
+			<mx:Label text="{_pedido.pedido}" fontWeight="bold"/>
+		</mx:HBox>
+		
+	</mx:VBox>
+	<mx:DataGrid left="10" right="10" top="218" id="datagrid" dataProvider="{_datagrid}" height="100" selectable="false">
+		<mx:columns>
+			<mx:DataGridColumn headerText="codEst" dataField="codEst"/>
+			<mx:DataGridColumn headerText="Qtde." dataField="qtd"/>
+			<mx:DataGridColumn headerText="Num. Fabricante" dataField="numFab"/>
+			<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+			<mx:DataGridColumn headerText="Preço" dataField="pcouni"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:Label id="labelItensPedido" x="10" y="198" text="Itens do Pedido (para simples conferência):" color="#FFFFFF"/>
+	<mx:HBox left="10" right="10" top="326">
+		<mx:Button label="Voltar" click="voltar()"/>
+		<mx:Spacer width="100%"/>
+		<mx:Button label="Gravar Venda" click="finalizar()"/>
+	</mx:HBox>
+</mx:Canvas>

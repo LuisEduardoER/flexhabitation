@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="300" height="164"
+	title="LOGIN" verticalScrollPolicy="off" horizontalScrollPolicy="off" keyUp="keyLogin(event)" >
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import br.com.cba.modelo.UsuarioModelo;
+			import mx.rpc.events.ResultEvent;
+			import framework.MKGBIController;
+			import framework.MKGBController;
+			[Bindable] private var _retorno:String;
+			
+			private var _cont:MKGBIController = MKGBController.getInstance("Usuarios");
+			
+			private function login():void{
+				var u:UsuarioModelo = new UsuarioModelo();
+				u.user = txtUsuario.text;
+				u.senha = txtSenha.text;
+				_cont.executeLocal("Login", [u], loginResult, this);
+			}
+			
+			private function loginResult(e:ResultEvent):void{
+				if(e.result != null){
+					Application.application.usuario = e.result as UsuarioModelo;
+					PopUpManager.removePopUp(this);
+				} else {
+					_retorno = "Usuário ou senha incorretos";
+				}
+			}
+			
+			private function keyLogin(e:KeyboardEvent):void{
+				if(e.keyCode == 13){
+					login();
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:VBox width="100%" id="warning" paddingBottom="5" paddingTop="5">
+		<mx:Label text="{_retorno}" color="#FFFF00" width="100%" textAlign="center" fontWeight="bold"/>
+	</mx:VBox>
+	
+	<mx:Form width="100%" height="116" y="10" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:FormItem label="Usuario" width="100%" color="#ffffff">
+			<mx:TextInput id="txtUsuario" width="100%" text="jefferson"/>
+		</mx:FormItem>
+		<mx:FormItem label="Senha" width="100%" color="#ffffff">
+			<mx:TextInput id="txtSenha" displayAsPassword="true" width="100%" text="jefferson"/>
+		</mx:FormItem>
+		<mx:FormItem direction="horizontal" width="100%">
+			<mx:Spacer width="100%"/>
+			<mx:Button label="Acessar" id="btnAcessar" click="login()"/>
+		</mx:FormItem>
+	</mx:Form>
+	
+</mx:TitleWindow>

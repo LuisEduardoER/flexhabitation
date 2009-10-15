@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="init()" width="100%" height="100%"
+	horizontalScrollPolicy="off">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.controls.Alert;
+			import framework.MKGBIController;
+			import framework.MKGBController;
+			import br.com.cba.modelo.UsuarioModelo;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable] private var _sha:DropShadowFilter;
+			[Bindable] public var _dpDatagridUsuarios:ArrayCollection;
+			
+			private var _cont:MKGBIController = MKGBController.getInstance("Usuarios");
+			
+			private function init():void{
+				_sha = new DropShadowFilter();
+				_sha.distance = 1;
+				labelUsuarios.filters = [_sha];
+				
+				_cont.execute("UsuarioListar", null, this, "_dpDatagridUsuarios", true);
+				
+			}
+			
+			private function gravar():void{
+				
+				var u:UsuarioModelo = new UsuarioModelo();
+				u.nome = txtNome.text;
+				u.user = txtUsuario.text; 
+				
+				if(datagridUsuarios.selectedIndex > -1){
+					
+					u.id = datagridUsuarios.selectedItem.id;
+					if(txtSenha1.text != "" && txtSenha2.text != ""){
+						u.senha = txtSenha1.text;
+					} else {
+						u.senha = datagridUsuarios.selectedItem.senha;
+					}
+					
+					_cont.execute("UsuarioAlterar", [u], this, "_dpDatagridUsuarios", true);
+					
+				} else {
+					
+					u.senha = txtSenha1.text;
+					
+					_cont.execute("UsuarioIncluir", [u], this, "_dpDatagridUsuarios", true);
+				
+				}
+				
+				limpar();
+				
+			}
+			
+			private function excluir():void{
+				Alert.yesLabel = "Sim";
+				Alert.noLabel = "Não";
+				Alert.show('Deseja excluir o usuário selecionado?', 'ATENÇÃO', Alert.YES|Alert.NO, this, fazerExclusao);
+			}
+			
+			private function fazerExclusao(e:CloseEvent):void{
+				if(e.detail == Alert.YES){
+					_cont.execute("UsuarioExcluir", [datagridUsuarios.selectedItem.id], this, "_dpDatagridUsuarios", true);
+					limpar();
+				}
+			}
+			
+			private function validar():void{
+				
+				if(datagridUsuarios.selectedIndex == -1){
+					if(txtNome.text != "" && txtSenha1.text != "" && txtSenha2.text != "" && 
+					txtUsuario.text != "" && (txtSenha1.text == txtSenha2.text)){
+						btnGravar.enabled = true;
+						btnGravar.toolTip = "Campos obrigatórios preenchidos. Favor gravar";
+					} else {
+						btnGravar.enabled = false;
+						btnGravar.toolTip = "Preencha todos os campos para habilitar este botão";
+					}	
+				}
+				
+			}
+			
+			private function limpar():void{
+				txtNome.text = "";
+				txtSenha1.text = "";
+				txtSenha2.text = "";
+				txtUsuario.text = "";
+				datagridUsuarios.selectedIndex = -1;
+				btnGravar.toolTip = "Preencha todos os campos para habilitar este botão";
+				btnGravar.enabled = false;
+				btnExcluir.enabled = false;
+			}
+			
+			private function selecionarUsuario(e:Event):void{
+				
+				var u:UsuarioModelo = UsuarioModelo(e.currentTarget.selectedItem);
+				
+				btnGravar.enabled = true;
+				btnGravar.toolTip = "";
+				btnExcluir.enabled = true;
+				
+				txtNome.text = u.nome;
+				txtUsuario.text = u.user;
+				
+			}
+			
+			private static var _instance:Usuarios;
+			public static function getInstance():Usuarios{
+				if(_instance == null){
+					_instance = new Usuarios();
+				}
+				return _instance;
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Label id="labelUsuarios" x="10" y="10" text="Gerenciamento de Usuários" 
+		fontSize="18" color="#FFFFFF" fontWeight="bold"/>
+	
+	
+	<mx:DataGrid left="10" right="10" top="40" height="200" id="datagridUsuarios" 
+		dataProvider="{_dpDatagridUsuarios}" change="selecionarUsuario(event)">
+		<mx:columns>
+			<mx:DataGridColumn headerText="ID" dataField="id" width="50" textAlign="center"/>
+			<mx:DataGridColumn headerText="Nome" dataField="nome"/>
+			<mx:DataGridColumn headerText="Usuário" dataField="user"/>
+		</mx:columns>
+	</mx:DataGrid>	
+	
+		
+	<mx:Form  top="260" left="10" right="10" color="#ffffff" styleName="PanelDatagrid">
+		
+		<mx:FormItem label="Nome" required="true" width="300">
+			<mx:TextInput id="txtNome" width="100%" change="validar()"/>
+		</mx:FormItem>
+		
+		<mx:FormItem label="Usuário" required="true" width="300">
+			<mx:TextInput id="txtUsuario" width="100%" change="validar()"/>
+		</mx:FormItem>
+		
+		<mx:FormItem label="Senha" required="true" width="300">
+			<mx:TextInput id="txtSenha1" width="100%" displayAsPassword="true" change="validar()"/>
+		</mx:FormItem>
+		
+		<mx:FormItem label="Confirme" required="true" width="300">
+			<mx:TextInput id="txtSenha2" width="100%" displayAsPassword="true" change="validar()"/>
+		</mx:FormItem>
+		
+		<mx:FormItem direction="horizontal">
+			<mx:Button label="Gravar" id="btnGravar" enabled="false" click="gravar()" toolTip="Preencha todos os campos para habilitar este botão"/>
+			<mx:Button label="Limpar" id="btnLimpar" click="limpar()"/>
+			<mx:Button label="Excluir" id="btnExcluir" enabled="false" click="excluir()"/>
+		</mx:FormItem>
+		
+	</mx:Form>
+		
+	
+	
+</mx:Canvas>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" styleName="Application" creationComplete="onInit()" backgroundImage="@Embed(source='assets/images/jefbg.jpg')">
+
+	<mx:Style source="assets/css/css.css"/>
+	    
+	<mx:Script>
+		<![CDATA[
+			import br.com.jfrootmaster.windows.formMovTrackExec;
+			import br.com.jfrootmaster.windows.formMovTrack;
+			import br.com.jfrootmaster.windows.formCadPrioridade;
+			import mx.controls.Alert;
+			import br.com.jfrootmaster.windows.formCadUsuario;
+			import mx.states.AddChild;
+			import mx.containers.Canvas;
+			import mx.managers.PopUpManager;
+			
+        [Bindable]
+        [Embed(source="assets/Icons/cadastro.png")]
+        public var IconCadastro:Class;
+        
+        [Bindable]
+        [Embed(source="assets/Icons/usuarios.png")]
+        public var IconUsuarios:Class;
+        
+        [Bindable]
+        [Embed(source="assets/Icons/cadUsuario.png")]
+        public var IconCadUsuarios:Class;
+
+		private function onInit():void {
+                var iconeCadastro:XML = treeData[0] as XML;
+                tree.setItemIcon(iconeCadastro, IconCadastro, IconCadastro);
+                
+                var iconeUsuarios:XML = treeData[0].SubMenu[0] as XML;
+                tree.setItemIcon(iconeUsuarios, IconUsuarios, IconUsuarios);  
+                
+                var iconeCadUsuarios:XML = treeData[0].SubMenu[0].Item[0] as XML;
+                tree.setItemIcon(iconeCadUsuarios, IconCadUsuarios, IconCadUsuarios); 
+            }
+
+		[Bindable]
+	    public var selectedNode:XML;
+	    
+        public function treeChanged(event:Event):void {
+        	selectedNode=Tree(event.target).selectedItem as XML;
+        	OpemForm(selectedNode.@Form);
+        }
+			
+		private function OpemForm(string:String):void{
+			var form1 = br.com.jfrootmaster.windows.formCadUsuario    as formCadUsuario;
+			var form2 = br.com.jfrootmaster.windows.formCadPrioridade as formCadPrioridade;
+			var form3 = br.com.jfrootmaster.windows.formMovTrack      as formMovTrack;
+			var form4 = br.com.jfrootmaster.windows.formMovTrackExec  as formMovTrackExec;
+
+			if(selectedNode.@Form == 'formCadUsuario'){
+				form1 = new formCadUsuario;
+				cvForms.removeAllChildren();
+				cvForms.addChild(form1);
+				form1.percentHeight = 100;
+				form1.percentWidth = 100;
+				cvForms.title = 'Cadastro de Usuarios';
+			}
+			else if(selectedNode.@Form == 'formCadPrioridade'){
+				form2 = new formCadPrioridade;
+				cvForms.removeAllChildren();
+				cvForms.addChild(form2);
+				form2.percentHeight = 100;
+				form2.percentWidth = 100;
+				cvForms.title = 'Cadastro de Prioridade';
+			}
+			else if(selectedNode.@Form == 'formMovTrack'){
+				form3 = new formMovTrack;
+				cvForms.removeAllChildren();
+				cvForms.addChild(form3);
+				form3.percentHeight = 100;
+				form3.percentWidth = 100;
+				cvForms.title = 'Inclusão de Track';
+			}
+			else if(selectedNode.@Form == 'formMovTrackExec'){
+				form4 = new formMovTrackExec;
+				cvForms.removeAllChildren();
+				cvForms.addChild(form4);
+				form4.percentHeight = 100;
+				form4.percentWidth = 100;
+				cvForms.title = 'Executar Track';
+			}else{
+				Alert.show("Nenhuma Janela Encontrada","Erro");
+			}
+		}
+		
+		
+		]]>
+	</mx:Script>
+	
+		<mx:XMLList id="treeData">
+        <MenuPrincipal label="Cadastro">
+            <SubMenu label="Usuario">
+                <Item label="Cadastro de Usuario" Form="formCadUsuario"/>
+            </SubMenu>
+            <SubMenu label="Chamados">
+                <Item label="Cadastro de Prioridade" Form="formCadPrioridade"/>
+            </SubMenu>
+        </MenuPrincipal>
+        <MenuPrincipal label="Tracks"> 
+                <Item label="Inclusão de Track" Form="formMovTrack"/>
+                <Item label="Execução de Track" Form="formMovTrackExec"/>
+        </MenuPrincipal>    
+	</mx:XMLList>
+	
+	<mx:ApplicationControlBar y="10" right="10" left="10" fillAlphas="[0.31, 0.31]" fillColors="[#7F7C7C, #7F7C7C]">
+		<mx:Image source="assets/Icons/20X20/User.png"/>
+		<mx:Label text="Jefferson" fontWeight="bold" color="#FFFFFF" width="133"/>
+		<mx:Image source="assets/Icons/20X20/Cargo.png"/>
+		<mx:Label text="Atendente T.I" fontWeight="bold" color="#FFFFFF"/>
+		<mx:Label text="1" id="lbIdUsuario" color="#FFFFFF" fontWeight="bold"/>
+		<mx:Spacer width="100%"/>
+		<mx:Button label="LogOut" width="91" color="#000000" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #B3B3B3]" borderColor="#FFFFFF" icon="@Embed(source='assets/Icons/20X20/LogOut.png')"/>
+	</mx:ApplicationControlBar>
+	<mx:Panel x="10" y="51" width="210" height="405" layout="absolute" styleName="Panel" title="Menu Principal">
+		<mx:Tree id="tree" x="0" y="0" width="100%" height="100%" dataProvider="{treeData}" labelField="@label"
+			 alpha="1.0" backgroundColor="#000000" borderColor="#000000" cornerRadius="4" borderStyle="none" styleName="Tree"
+			 change="treeChanged(event)"></mx:Tree>
+	</mx:Panel>
+	<mx:Panel y="51" height="679" layout="absolute" styleName="Panel" id="cvForms" right="10" left="228">
+	</mx:Panel>
+	<mx:Panel x="10" y="464" width="210" height="266" layout="absolute" styleName="Panel" title="Info">
+		<mx:Label x="10" y="0" text="Data: 22/07/2009" width="190" fontWeight="bold" color="#FFFFFF"/>
+		<mx:Label x="10" y="26" text="Hora: 14:57" width="190" fontWeight="bold" color="#FFFFFF"/>
+		<mx:Label x="10" y="62" text="Chamados Em Aberto: 0" width="190" fontWeight="bold" color="#FFFFFF"/>
+		<mx:Label x="10" y="98" text="Mensagens Em Aberto: 0" width="190" fontWeight="bold" color="#FFFFFF"/>
+		<mx:HRule y="52" left="10" right="10"/>
+		<mx:HRule y="88" left="10" right="10"/>
+	</mx:Panel>
+	
+</mx:Application>

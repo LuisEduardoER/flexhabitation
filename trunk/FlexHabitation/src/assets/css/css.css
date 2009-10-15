@@ -1,0 +1,20 @@
+/* CSS file */
+Application {
+   backgroundGradientColors: #4A4A4A, #171717;
+   color: #ffff00;
+	backgroundGradientAlphas: 1.0, 1.0;
+}
+
+ApplicationControlBar {
+   highlightAlphas: 0.36, 0.12;
+   fillAlphas: 0.44, 0.16;
+   fillColors: #000000, #333333;
+   backgroundColor: #000000;
+   backgroundAlpha: 1;
+   dropShadowEnabled: true;
+   shadowDistance: 6;
+   shadowDirection: center;
+}
+
+
+

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	creationComplete="init()">
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.AsyncToken;
+			import mx.rpc.remoting.RemoteObject;
+			import br.com.cba.modelo.PedidoModelo;
+			import br.com.cba.itemrenderers.GravarPedido;
+			import framework.MKGBController;
+			import framework.MKGBIController;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable] private var _sha:DropShadowFilter;
+			[Bindable] public var _dataproviderVendas:ArrayCollection = new ArrayCollection();
+			
+			private var _cont:MKGBIController = MKGBController.getInstance("Pedidos");
+			private var _pedidoSelecionado:GravarPedido;
+			private var _remote:RemoteObject;
+			
+			private function init():void{
+				_sha = new DropShadowFilter();
+				_sha.distance = 1;
+				labelVendas.filters = [_sha];
+				
+				_remote = new RemoteObject();
+				_remote.destination = "Pedidos";
+				
+				this.addEventListener('voltar', handleVoltar);
+				
+			}
+			
+			public function handleVoltar(e:Event):void{
+				this.removeChild(_pedidoSelecionado);
+				datagridVendas.visible = true;
+				boxContinuar.visible = true;
+				boxLocalizar.visible = true;
+			}
+			
+			private function localizar():void{
+				_cont.execute("PedidosListar", [txtLocalizar.text], this, "_dataproviderVendas", true);
+				datagridVendas.visible = true;
+				boxContinuar.visible = true;
+			}
+			
+			private function PedidosListarResult(e:ResultEvent):void{
+				if(e.result == null){
+					_dataproviderVendas = null;
+					Alert.show('Pedido não encontrado ou pedido não contém carcaças', 'ATENÇÃO');
+				} else {
+					_dataproviderVendas.addItem(e.result.pedido);
+				}
+			}
+			
+			private function continuar():void{
+				datagridVendas.visible = false;
+				boxContinuar.visible = false;
+				boxLocalizar.visible = false;
+				
+				_pedidoSelecionado = new GravarPedido();
+				_pedidoSelecionado.setStyle("left", 50);
+				_pedidoSelecionado.setStyle("right", 50);
+				_pedidoSelecionado.setStyle("top", 50);
+				_pedidoSelecionado.setStyle("bottom", 50);
+				_pedidoSelecionado.pedido = PedidoModelo(datagridVendas.selectedItem);
+				
+				this.addChild(_pedidoSelecionado);
+				
+			}
+			
+			private static var _instance:Vendas;
+			public static function getInstance():Vendas{
+				if(_instance == null){
+					_instance = new Vendas();
+				}
+				return _instance;
+			}
+			
+			private function validate():void{
+				if(txtLocalizar.text.length >= 4){
+					btnOK.enabled = true;
+					btnOK.toolTip = "";
+				} else {
+					btnOK.enabled = false;
+					btnOK.toolTip = "Digite pelo menos 4 caracteres para habilitar este campo";
+				}
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Label id="labelVendas" x="10" y="10" text="Lançamento de Vendas" 
+		fontSize="18" color="#FFFFFF" fontWeight="bold"/>
+	
+	<mx:HBox y="50" horizontalCenter="0" id="boxLocalizar">
+		<mx:FormItem label="Localize o pedido" color="#ffffff" fontSize="14" direction="horizontal">
+			<mx:TextInput id="txtLocalizar" text="H2600034" change="validate()"/>
+			<mx:Button id="btnOK" label="OK" click="localizar()" enabled="true" 
+				toolTip="Digite pelo menos 4 caracteres para habilitar este campo"/>
+		</mx:FormItem>
+	</mx:HBox>
+	
+	<mx:DataGrid y="85" width="550" horizontalCenter="0" height="170" id="datagridVendas" 
+		visible="false" dataProvider="{_dataproviderVendas}" change="btnContinuar.enabled=true;">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Pedido" dataField="pedido"/>
+			<mx:DataGridColumn headerText="Cod. Empresa" dataField="codEmpresa"/>
+			<mx:DataGridColumn headerText="Cod. Vendedor" dataField="codVend"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	<mx:HBox id="boxContinuar" width="{datagridVendas.width}" y="{datagridVendas.height + 100}" horizontalCenter="0" visible="false">
+		<mx:Label text="Selecione o pedido na lista acima e clique no botão ao lado" color="#ffffff"/>
+		<mx:Spacer width="100%"/>
+		<mx:Button label="Continuar" id="btnContinuar" enabled="false" click="continuar()"/>
+	</mx:HBox>
+	
+</mx:Canvas>
