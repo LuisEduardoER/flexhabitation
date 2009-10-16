@@ -2,7 +2,7 @@
 Application {
    backgroundGradientColors: #4A4A4A, #171717;
    color: #ffff00;
-	backgroundGradientAlphas: 1.0, 1.0;
+   backgroundGradientAlphas: 1.0, 1.0;
 }
 
 ApplicationControlBar {
@@ -25,6 +25,16 @@ ApplicationControlBar {
    shadowDirection: right;
    statusStyleName: panelStatus;
    dropShadowColor: #505050;
+}
+
+Accordion {
+   headerStyleName: "myaccordionHeader";
+   backgroundAlpha: 0;
+}
+
+.myaccordionHeader {
+   fillAlphas: 1, 0.46, 0.75, 0.65;
+   fillColors: #000000, #000000, #ffffff, #eeeeee;
 }
 
 
