@@ -42,18 +42,30 @@
 	</mx:ApplicationControlBar>
 	<mx:HBox right="10" left="10" horizontalGap="12" bottom="15" top="41">
 		<mx:VBox height="100%" width="270">
-			<mx:Panel width="100%" layout="absolute" styleName="PanelIndex" height="80%" title="Menu">
-				<mx:Button id="add" useHandCursor="true"
-					fillColors="[#000000,#000000]" fillAlphas="0" borderColor="#525151"
-					color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
-					x="10" y="0" label="Button" width="80" height="29"
-					mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
-				/>
+			<mx:Panel width="100%" layout="absolute" styleName="PanelIndex" height="80%" title="Menu Principal">
 			</mx:Panel>
-			<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="20%">
+			<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="20%" title="Recados">
 			</mx:Panel>
 		</mx:VBox>
 		<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="100%">
+			<mx:Button id="add" useHandCursor="true"
+				fillColors="[#000000, #525252, #000000, #2D2D2D]" fillAlphas="[0.25, 1.0, 0.25, 1.0]" borderColor="#525151"
+				color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
+				x="38" y="10" label="Cadastro Usuarios" width="153" height="29"
+				mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
+			/>
+			<mx:Button id="add0" useHandCursor="true"
+				fillColors="[#000000, #525252, #000000, #2D2D2D]" fillAlphas="[0.25, 1.0, 0.25, 1.0]" borderColor="#525151"
+				color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
+				x="38" y="47" label="Cadastro de Imoveis" width="153" height="29"
+				mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
+			/>
+			<mx:Button id="add1" useHandCursor="true"
+				fillColors="[#000000, #525252, #000000, #2D2D2D]" fillAlphas="[0.25, 1.0, 0.25, 1.0]" borderColor="#525151"
+				color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
+				x="38" y="93" label="Cadastro de Visitantes" width="153" height="29"
+				mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
+			/>
 		</mx:Panel>
 	</mx:HBox>
 </mx:Application>
