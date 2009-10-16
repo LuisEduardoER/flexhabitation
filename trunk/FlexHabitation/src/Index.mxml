@@ -27,32 +27,33 @@
 		alphaFrom="1.0" alphaTo="0.0"
 		blurXFrom="0.0" blurXTo="20.0"
 		blurYFrom="0.0" blurYTo="20.0"
-		color="0X900aeef"/>
+		color="#FCFF00"/>
 	
 	<mx:Glow
 		id="blurBlueOut" duration="700"
 		alphaFrom="0.0" alphaTo="1.0"
- 		blurXFrom="20.0" blurXTo="0.0"/>
+ 		blurXFrom="20.0" blurXTo="0.0"
+ 		color="#FCFF00"/>
 	
 	
 	<mx:ApplicationControlBar y="0" right="0" left="0">
 		<mx:Image source="assets/Icons/20X20/User.png"/>
-		<mx:Label text="Usuário" fontWeight="bold"/>
+		<mx:Label text="Usuário" fontWeight="bold" color="#FCFF00"/>
 	</mx:ApplicationControlBar>
 	<mx:HBox right="10" left="10" horizontalGap="12" bottom="15" top="41">
 		<mx:VBox height="100%" width="270">
 			<mx:Panel width="100%" layout="absolute" styleName="PanelIndex" height="80%" title="Menu">
+				<mx:Button id="add" useHandCursor="true"
+					fillColors="[#000000,#000000]" fillAlphas="0" borderColor="#525151"
+					color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
+					x="10" y="0" label="Button" width="80" height="29"
+					mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
+				/>
 			</mx:Panel>
 			<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="20%">
 			</mx:Panel>
 		</mx:VBox>
 		<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="100%">
-			<mx:Button id="add" useHandCursor="true"
-				fillColors="[#000000,#000000]" fillAlphas="0" borderColor="#525151"
-				color="#FDFBFB" themeColor="#535C75" textRollOverColor="#2667B0"
-				x="252" y="79" label="Button" width="111" height="81"
-				mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
-			/> 
 		</mx:Panel>
 	</mx:HBox>
 </mx:Application>
