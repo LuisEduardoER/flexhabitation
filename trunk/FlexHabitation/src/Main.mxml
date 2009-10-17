@@ -15,15 +15,15 @@
 			import mx.managers.PopUpManager;
 			
         [Bindable]
-        [Embed(source="assets/Icons/cadastro.png")]
+       // [Embed(source="assets/Icons/cadastro.png")]
         public var IconCadastro:Class;
         
         [Bindable]
-        [Embed(source="assets/Icons/usuarios.png")]
+       // [Embed(source="assets/Icons/usuarios.png")]
         public var IconUsuarios:Class;
         
         [Bindable]
-        [Embed(source="assets/Icons/cadUsuario.png")]
+       // [Embed(source="assets/Icons/cadUsuario.png")]
         public var IconCadUsuarios:Class;
 
 		private function onInit():void {
