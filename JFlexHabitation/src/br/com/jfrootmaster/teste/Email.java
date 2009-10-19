@@ -73,7 +73,13 @@ import javax.mail.internet.MimeMessage;
        //a linha de código seguinte é a responsável   
        //pelo envio do email   
    
-       Transport.send(message);  
+       Transport.send(message); 
+       
+       System.out.println("Enviando Email.....");
+       System.out.println("Destinatario: " + destinatario);
+       System.out.println("Remetente: " + remetente);
+       System.out.println("Assunto: " + assunto);
+       System.out.println("Mesangem: " + mensagem);
     }  
     public static void main(String args[]) throws AddressException, MessagingException{  
        Email email = new Email();  
