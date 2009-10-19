@@ -23,5 +23,11 @@
   			<source>br.com.jfrootmaster.rpc.Cadastro</source> 
   		</properties>
 	</destination>
+	
+	<destination id="emails"> 
+		<properties>
+  			<source>br.com.jfrootmaster.rpc.emails</source> 
+  		</properties>
+	</destination>
 
 </service>
