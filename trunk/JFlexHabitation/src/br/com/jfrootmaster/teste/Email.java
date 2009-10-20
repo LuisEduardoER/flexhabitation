@@ -83,8 +83,8 @@ import javax.mail.internet.MimeMessage;
     }  
     public static void main(String args[]) throws AddressException, MessagingException{  
        Email email = new Email();  
-       email.enviarEmail("smtp.cbadiesel.com.br", "Teste Email com Java!", "jf.rootmaster@gmail.com",  
-                      "jefferson.ti@cbadiesel.com.br", "Oi, tudo bem?? meu projeto java de enviar emails funcionou hehehe >D");     
+       email.enviarEmail("smtp.cbadiesel.com.br", "Teste assunto java mail", "jefferson.ti@cbadiesel.com.br",  
+                      "jf.rootmaster@gmail.com", "teste corpo via javamail");     
     }  
  }  
 	
