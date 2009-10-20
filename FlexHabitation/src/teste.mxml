@@ -5,6 +5,7 @@ creationComplete="onInit()" xmlns:ns1="br.com.jfrootmaster.custon.*">
 
  <mx:Script>
  <![CDATA[
+ 	import mx.controls.HRule;
  	import br.com.jfrootmaster.modelo.email.emailModelo;
  	//Import's
 			import mx.collections.ArrayCollection;
@@ -50,7 +51,18 @@ creationComplete="onInit()" xmlns:ns1="br.com.jfrootmaster.custon.*">
 		
 		private function onAfterInserir(e:ResultEvent):void{
 			Alert.show("Funfo aeee!!! :D ");
-		}		
+		}	
+		
+		private function teste2():void {
+			var textoteste:String;
+			textoteste = textEditor.htmlText;
+		}	
+		
+		private function inserehtmlteste():void {
+			var htmlteste:String;
+			htmlteste = '<TEXTFORMAT LEADING="2"><P ALIGN="LEFT"><FONT FACE="Verdana" SIZE="10" COLOR="#0B333C" LETTERSPACING="0" KERNING="0">dfghdfgh</FONT></P></TEXTFORMAT><TEXTFORMAT LEADING="2"><P ALIGN="LEFT"><FONT FACE="Verdana" SIZE="10" COLOR="#0000FF" LETTERSPACING="0" KERNING="0"><A HREF="http://www.uol.com.bt" TARGET="_blank"><U>dfghdfgh</U></A></FONT></P></TEXTFORMAT>';
+			textEditor.htmlText = htmlteste;
+		}
 			
  ]]>
  </mx:Script>
@@ -74,5 +86,9 @@ creationComplete="onInit()" xmlns:ns1="br.com.jfrootmaster.custon.*">
   <mx:TextInput x="10" y="86" width="458" id="tiAssunto"/>
   <mx:Label x="10" y="69" text="Assunto" fontWeight="bold"/>
   <mx:TextArea x="10" y="189" width="458" height="138" id="tiMensagem"/>
+  <mx:RichTextEditor id="textEditor" x="493" y="39" title="Title" width="418">
+  </mx:RichTextEditor>
+  <mx:Button x="493" y="347" label="salva html" click="teste2()"/>
+  <mx:Button x="597.5" y="347" label="insere html" click="inserehtmlteste()"/>
 
 </mx:Application>
