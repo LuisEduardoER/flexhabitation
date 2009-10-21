@@ -42,8 +42,8 @@ public class receberEmail {
 			List<String> listaString = new ArrayList<String>();
 			
 			String host = "pop.cbadiesel.com.br";
-			String username = "jefferson.ti@cbadiesel.com.br";
-			String passwoed = "jn2803";
+			String username = "jamille.vendas@cbadiesel.com.br";
+			String passwoed = "cbadiesel";
 		
 	        Properties properties = System.getProperties();
 	        Session session = Session.getDefaultInstance(properties);
@@ -83,7 +83,7 @@ public class receberEmail {
 	                
 	                //teste inclusao na lista de retorno;
 	                //lista.get(i).setPara(to);
-	                listaString.add(to);
+	                //listaString.add(to);
 	            }
 
 	            String subject = msg[i].getSubject();
@@ -92,7 +92,7 @@ public class receberEmail {
 	                
 	                //teste inclusao na lista de retorno;
 	                //lista.get(i).setAssunto(subject);
-	                listaString.add(subject);
+	                //listaString.add(subject);
 	            }
 	            Date sent = msg[i].getSentDate();
 	            if (sent != null) {
@@ -136,7 +136,7 @@ public class receberEmail {
 	                    //mostrarHTML(bodyPart.getContent().toString());
 	                    
 	                    //teste inclusao na lista de retorno;
-		                lista.get(i).setMensagemHtml(bodyPart.getContent().toString());
+		                //lista.get(i).setMensagemHtml(bodyPart.getContent().toString());
 	                }
 	            }
 	            System.out.println();
