@@ -46,36 +46,36 @@
 				<mx:Accordion y="0" width="100%" height="100%" x="0" styleName="Accordion" borderStyle="none" borderThickness="0" borderColor="#000000" selectedIndex="2">
 					<mx:Canvas label="Usuarios" width="100%" height="100%" alpha="1.0" backgroundAlpha="1.0">
 						<mx:icon>@Embed(source='assets/Icons/20X20/cadUsuarios.png')</mx:icon>
-						<mx:Button id="add" useHandCursor="true"
+						<mx:Button id="btnCadUsuario" useHandCursor="true"
 							fillColors="[#000000, #525252, #000000, #2D2D2D]" fillAlphas="[0.25, 1.0, 0.25, 1.0]" borderColor="#525151"
 							color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
-							x="10" y="10" label="Cadastro Usuarios" width="197" height="29"
-							mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
-						>
-							<mx:icon>@Embed(source='assets/Icons/Icons 32X32/Warning.png')</mx:icon>
+							x="10" y="10" label="Cadastro Usuarios" width="250" height="42"
+							mouseOver="{buttonOver(btnCadUsuario)}" mouseOut="{buttonOut(btnCadUsuario)}"
+						 labelPlacement="right">
+							<mx:icon>@Embed(source='assets/Icons/Icons 32X32/cadUsers.png')</mx:icon>
 						</mx:Button>
-						<mx:Button id="add2" useHandCursor="true"
+						<mx:Button id="btnAlteraSenha" useHandCursor="true"
 							fillColors="[#000000, #525252, #000000, #2D2D2D]" fillAlphas="[0.25, 1.0, 0.25, 1.0]" borderColor="#525151"
 							color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
-							x="10" y="47" label="Alteração de Senha" width="197" height="29"
-							mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
+							x="10" y="60" label="Alteração de Senha" width="197" height="29"
+							mouseOver="{buttonOver(btnAlteraSenha)}" mouseOut="{buttonOut(btnAlteraSenha)}"
 						/>
 					</mx:Canvas>
 					<mx:Canvas label="Visitantes" width="100%" height="100%">
 						<mx:icon>@Embed(source='assets/Icons/20X20/visitantes.png')</mx:icon>
-						<mx:Button id="add1" useHandCursor="true"
+						<mx:Button id="btnCadVisitante" useHandCursor="true"
 							fillColors="[#000000, #525252, #000000, #2D2D2D]" fillAlphas="[0.25, 1.0, 0.25, 1.0]" borderColor="#525151"
 							color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
 							x="47.5" y="10" label="Cadastro de Visitantes" width="153" height="29"
-							mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
+							mouseOver="{buttonOver(btnCadVisitante)}" mouseOut="{buttonOut(btnCadVisitante)}"
 						/>
 					</mx:Canvas>
 					<mx:Canvas label="Imoveis" width="100%" height="100%" icon="@Embed(source='assets/Icons/20X20/imoveis.png')">
-						<mx:Button id="add0" useHandCursor="true"
+						<mx:Button id="btnCadImoveis" useHandCursor="true"
 							fillColors="[#000000, #525252, #000000, #2D2D2D]" fillAlphas="[0.25, 1.0, 0.25, 1.0]" borderColor="#525151"
 							color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
 							x="47.5" y="10" label="Cadastro de Imoveis" width="153" height="29"
-							mouseOver="{buttonOver(add)}" mouseOut="{buttonOut(add)}"
+							mouseOver="{buttonOver(btnCadImoveis)}" mouseOut="{buttonOut(btnCadImoveis)}"
 						/>
 					</mx:Canvas>
 				</mx:Accordion>
