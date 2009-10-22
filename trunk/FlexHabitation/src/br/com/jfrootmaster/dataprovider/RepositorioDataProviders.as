@@ -6,11 +6,20 @@ package br.com.jfrootmaster.dataprovider{
 	[Bindable]
 	public class RepositorioDataProviders{
 		
-		public var status:ArrayCollection = new ArrayCollection(
-				[ {tipo:"Ativo", id:'1'},
-				{tipo:"Cancelado", id:'2'},
-				{tipo:"Temporariamente Cancelado", id:'3'}
+		public var tipoImoveis:ArrayCollection = new ArrayCollection(
+				[ {tipo:"Casa", id:'1'},
+				{tipo:"Sobrado", id:'2'},
+				{tipo:"Apartamento", id:'3'},
+				{tipo:"KiNet", id:'4'},
+				{tipo:"Galpão", id:'5'},
+				{tipo:"Terreno", id:'6'}
 			]);
+			
+		public var status:ArrayCollection = new ArrayCollection(
+			[ {tipo:"Ativo", id:'1'},
+			{tipo:"Cancelado", id:'2'},
+			{tipo:"Temporariamente Cancelado", id:'3'}
+		]);
 		
 		/* public var senhas:ArrayCollection = new ArrayCollection(
 				[ {tipo:"Plansyst1", id:'1'},
