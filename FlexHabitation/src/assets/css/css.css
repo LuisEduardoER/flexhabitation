@@ -64,6 +64,22 @@ Accordion {
    cornerRadius: 8;
 }
 
+DataGrid {
+   backgroundAlpha: 0.7;
+   alternatingItemColors: #353535, #525151;
+   headerColors: #808080, #000000;
+   horizontalGridLines: false;
+   letterSpacing: 0;
+   verticalGridLines: false;
+   useRollOver: true;
+   color: #ffffff;
+   textIndent: 0;
+   dropShadowEnabled: true;
+   fontWeight: bold;
+	borderThickness: 0;
+	borderStyle: solid;
+}
+
 
 
 
