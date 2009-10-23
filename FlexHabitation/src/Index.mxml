@@ -5,6 +5,8 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
+			import br.com.jfrootmaster.windows.cadastro.formCadImovel;
 			import mx.controls.Button;
 			
 
@@ -16,7 +18,46 @@
 		private function buttonOut(a:Button):void{
  			blurBlueIn.target=a;
  			blurBlueIn.play();
- 		}			
+ 		}	
+ 		
+ 		private function OpemForm(btn:Button):void{
+			var form1 = br.com.jfrootmaster.windows.cadastro.formCadImovel as formCadImovel;
+	
+			if(btn.id == 'btnCadImoveis'){
+				form1 = new formCadImovel;
+				cvForms.removeAllChildren();
+				cvForms.addChild(form1);
+				form1.percentHeight = 100;
+				form1.percentWidth = 100;
+				cvForms.title = 'Cadastro de Imoveis';
+			}
+			/* else if(selectedNode.@Form == 'formCadPrioridade'){
+				form2 = new formCadPrioridade;
+				cvForms.removeAllChildren();
+				cvForms.addChild(form2);
+				form2.percentHeight = 100;
+				form2.percentWidth = 100;
+				cvForms.title = 'Cadastro de Prioridade';
+			}
+			else if(selectedNode.@Form == 'formMovTrack'){
+				form3 = new formMovTrack;
+				cvForms.removeAllChildren();
+				cvForms.addChild(form3);
+				form3.percentHeight = 100;
+				form3.percentWidth = 100;
+				cvForms.title = 'Inclusão de Track';
+			}
+			else if(selectedNode.@Form == 'formMovTrackExec'){
+				form4 = new formMovTrackExec;
+				cvForms.removeAllChildren();
+				cvForms.addChild(form4);
+				form4.percentHeight = 100;
+				form4.percentWidth = 100;
+				cvForms.title = 'Executar Track';
+			} */else{
+				Alert.show("Nenhuma Janela Encontrada","Erro");
+			}
+		}		
 			
 			
 		]]>
@@ -76,6 +117,7 @@
 							color="#FDFBFB" themeColor="#FCFF00" textRollOverColor="#FCFF00"
 							x="47.5" y="10" label="Cadastro de Imoveis" width="153" height="29"
 							mouseOver="{buttonOver(btnCadImoveis)}" mouseOut="{buttonOut(btnCadImoveis)}"
+							click="OpemForm(btnCadImoveis)"
 						/>
 					</mx:Canvas>
 				</mx:Accordion>
@@ -83,7 +125,7 @@
 			<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="20%" title="Recados">
 			</mx:Panel>
 		</mx:VBox>
-		<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="100%">
+		<mx:Panel layout="absolute" styleName="PanelIndex" width="100%" height="100%" id="cvForms">
 		</mx:Panel>
 	</mx:HBox>
 </mx:Application>

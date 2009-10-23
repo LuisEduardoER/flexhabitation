@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onInit()">
+	
+	<mx:Script>
+		<![CDATA[
+			
+			private var _valor			:uint				= 0;
+			
+			private function onInit():void{
+				this.addEventListener(MouseEvent.CLICK, onSelected);	
+			}
+			
+			private function onSelected(e:MouseEvent):void{
+				if(this.selected == true){
+					_valor = 1;
+				}else{
+					_valor = 0;
+				}
+			}
+			
+			public function setarValor(valor:uint):void{
+				if(valor == 0){
+					this.selected = false;
+				}else{
+					this.selected = true;
+				}
+			}
+			
+		public function get valor():uint {
+			return _valor;
+		}
+		
+		public function set valor(value:uint):void {
+			_valor = value;
+		}
+			
+		]]>
+	</mx:Script>
+	
+</mx:CheckBox>

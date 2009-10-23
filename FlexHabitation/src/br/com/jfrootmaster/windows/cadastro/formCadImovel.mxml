@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="706" height="478"
-	creationComplete="onInit()" styleName="TitleWindow" xmlns:ns1="br.com.jfrootmaster.custon.*" backgroundColor="#96D3F9">
+	creationComplete="onInit()" styleName="TitleWindow" xmlns:ns1="br.com.jfrootmaster.custon.*" backgroundColor="#FFFFFF" backgroundAlpha="0.0">
 	
 	<!--Setando O Estilo da pagina -->
 	<mx:Style source="assets/css/css.css"/>
@@ -9,6 +9,8 @@
 	<mx:Script>
 	
 		<![CDATA[
+			import br.com.jfrootmaster.modelo.email.emailModelo;
+			import br.com.jfrootmaster.modelo.Cadastro.CadImoveisModelo;
 			import br.com.jfrootmaster.modelo.Cadastro.CadUsuarioModelo;
 			import br.com.jfrootmaster.modelo.Cadastro.CadStatusUsuarioModelo;
 			import flash.utils.getTimer;
@@ -37,16 +39,10 @@
 			private var _dados:RepositorioDataProviders =  RepositorioDataProviders.getInstance();
 			
 			[Bindable]
-			private var StatusUser:ArrayCollection;
-			
-			[Bindable]
-			private var KeyMessenger:ArrayCollection;
-			
-			[Bindable]
 			private var CepEncontrado:ArrayCollection;
 			
 			[Bindable]
-			private var Position:ArrayCollection;
+			private var listaImoveis:ArrayCollection;
 			
 ////////////////////////////Inicio das Funções/////////////////////////////////
 			
@@ -64,25 +60,12 @@
 			this.addEventListener("onExcluir",onExcluir);
 			
 			_cont.destinationAlternativo = "Cadastro";
-			_cont.executeLocal("CadStatusUsuarioListar", [], onAfterCadStatusUserListar,this, "StatusUser",true);
+			_cont.executeLocal("CadImoveisListar", [], onAfterCadImoveisListar,this, "StatusUser",true);
 				
-			_cont.destinationAlternativo = "Cadastro";
-			_cont.executeLocal("CadMensagemChaveListar", [], onAfterCadKeyMessengerListar,this, "KeyMessenger",true);
-				
-			_cont.destinationAlternativo = "Cadastro";
-			_cont.executeLocal("CadCargoListar", [], onAfterCadPositionListar,this, "CadPosition",true);
 		}
 		
-		private function onAfterCadPositionListar(e:ResultEvent):void{
-			Position = e.result as ArrayCollection;
-		}
-		
-		private function onAfterCadKeyMessengerListar(e:ResultEvent):void{
-			KeyMessenger = e.result as ArrayCollection;
-		}
-		
-		private function onAfterCadStatusUserListar(e:ResultEvent):void{
-			StatusUser = e.result as ArrayCollection;
+		private function onAfterCadImoveisListar(e:ResultEvent):void{
+			listaImoveis = e.result as ArrayCollection;
 		}
 			
 		//Função para limpar os campos do formulario
@@ -171,43 +154,52 @@
 		
 		//Função que insere os itens no banco	
 		private function onInsert():void{
-			if(tiSenha.text == tiConfirmaSenha.text){
-			var cum:CadUsuarioModelo          = new CadUsuarioModelo();
-				cum.endereco  	              = tiRua.text;
-				cum.resposta_mensagem_chave   = tiRespostaKeyMessenger.text;
-				cum.celular 				  = tiCelular.text;
-				cum.cidade 				      = tiCidade.text;
-				cum.pais 			          = tiPais.text;
-				cum.cpf						  = tiCpf.text;
-				cum.data_cadastro			  = new Date();
-				cum.nome				      = tiNome.text;
-				cum.id_mensagem_chave         = cmbKeyMessenger.selectedItem.id_mensagem_chave;
-				cum.id_cargo 			      = cmbCargo.selectedItem.id_cargo; 
-				cum.id_status_usuario		  = cmbStatusUser.selectedItem.id_status_usuario;
-				cum.sobrenome 				  = tiSobrenome.text;
-				cum.nick 					  = tiNick.text;
-				cum.numero					  = tiNumero.text;
-				cum.senha				      = tiSenha.text;
-				cum.telefone				  = tiTelefone.text;
-				cum.bairro					  = tiBairro.text;
-				cum.rg						  = tiRg.text;
-				cum.source_foto			      = '\assets\teste\fotoUsers';
-				cum.estado					  = tiEstado.text;
-				cum.cep				          = tiCep.text;
-				cum.inativo					  = '1'; // provisorio ate implantar o form
-				cum.ramal 					  = tiRamal.text;
+			var cim:CadImoveisModelo        = new CadImoveisModelo();
+				cim.area_construida			= tiAreaConstruida.text;		
+				cim.area_servico			= ckAreaServico.valor;
+				cim.area_terreno			= tiAreaTerreno.text;
+				cim.area_util				= tiAreaUtil.text;
+				cim.bairro					= tiBairro.text;
+				cim.churrasqueira			= ckChurrasqueira.valor;
+				cim.cidade					= tiCidade.text;
+				cim.complemento				= tiComplemento.text;
+				cim.cond_pgto				= tiCondPagamento.text;
+				cim.copa					= ckCopa.valor;
+				cim.cozinha					= ckCozinha.valor;
+				cim.data_cadastro			= new Date();
+				cim.dep_empregada			= ckDepEmpregada.valor;	
+				cim.email_contato			= tiEmailContato.text;
+				cim.endereco				= tiRua.text;
+				cim.estado					= tiEstado.text;
+				cim.finalidade				= cmbFinalidade.selectedItem.tipo;
+				cim.financiado				= ckFinanciado.valor;
+				//cim.garagem				= 
+				cim.num_dormitorios 		= Number(tiDomitorios.text);
+				cim.num_suites				= Number(tiSuites.text);
+				cim.num_vagas_garagem		= Number(tiGaragem.text);
+				cim.numero					= tiNumero.text;
+				cim.objetivo				= cmbObjetivo.selectedItem.tipo;
+				cim.observacao				= tiObservacao.text;
+				cim.permite_placa			= ckPermitePlaca.valor;
+				cim.pscina					= ckPscina.valor;
+				cim.sala_estar				= ckSalaEstar.valor;
+				cim.sala_jantar				= ckSalaJantar.valor;
+				cim.sala_tv					= ckSalaTv.valor;
+				cim.tipo_imovel				= cmbTipoImovel.selectedItem.tipo;
+				cim.topografia				= cmbTopografia.selectedItem.tipo;
+				cim.valor_condominio		= Number(tiValorCondominio.text);
+				cim.valor_iptu				= Number(tiValorIptu.text); 
+				cim.valor_locacao			= Number(tiValorLocacao.text);
+				cim.valor_venda				= Number(tiValorVenda.text);
 				
 				//insere items no banco
 				_cont.destinationAlternativo = "Cadastro";
-				_cont.executeLocal("CadUsuarioIncluir", [cum], onAfterInserir,this, "dataSet",true);
-			}else{
-				Alert.show('As senhas não conferem!!','Atenção');
-			}
+				_cont.executeLocal("CadImoveisIncluir", [cim], onAfterInserir,this, "dataSet",true);
 		}
 		
 		//Função result do insert	
 		private function onAfterInserir(e:ResultEvent):void{
-			tiId.text = e.result.id_usuario;
+			tiId.text = e.result.id_imovel;
 			lbInfo.setStyle("color" , "Black"); //seta estilo do label.
 			lbInfo.text = "Item Inserido com sucesso!"; // exibe mensagem ao usuario.
 			
@@ -219,40 +211,47 @@
 		
 		//Função que altera os itens no banco	
 		private function onUpdate():void{
-			if(tiSenha.text == tiConfirmaSenha.text){
-			var cum:CadUsuarioModelo        = new CadUsuarioModelo();
-				cum 					    = CadUsuarioModelo(dataGrid.selectedItem);
-				cum.endereco  	              = tiRua.text;
-				cum.resposta_mensagem_chave   = tiRespostaKeyMessenger.text;
-				cum.celular 				  = tiCelular.text;
-				cum.cidade 				      = tiCidade.text;
-				cum.pais 			          = tiPais.text;
-				cum.cpf						  = tiCpf.text;
-				cum.data_cadastro			  = new Date();
-				cum.nome				      = tiNome.text;
-				cum.id_mensagem_chave         = cmbKeyMessenger.selectedItem.id_key_messenger;
-				cum.id_cargo 			      = cmbCargo.selectedItem.id_position; 
-				cum.id_status_usuario		  = cmbStatusUser.selectedItem.id_status_user;
-				cum.sobrenome 				  = tiSobrenome.text;
-				cum.nick 					  = tiNick.text;
-				cum.numero					  = tiNumero.text;
-				cum.senha				      = tiSenha.text;
-				cum.telefone				  = tiTelefone.text;
-				cum.bairro					  = tiBairro.text;
-				cum.rg						  = tiRg.text;
-				cum.source_foto			      = '\assets\teste\fotoUsers';
-				cum.estado					  = tiEstado.text;
-				cum.cep				          = tiCep.text;
-				cum.inativo					  = '1'; // provisorio ate implantar o form
-				cum.ramal 					  = tiRamal.text;
+			var cim:CadImoveisModelo        = new CadImoveisModelo();
+				cim.area_construida			= tiAreaConstruida.text;		
+				cim.area_servico			= ckAreaServico.valor;
+				cim.area_terreno			= tiAreaTerreno.text;
+				cim.area_util				= tiAreaUtil.text;
+				cim.bairro					= tiBairro.text;
+				cim.churrasqueira			= ckChurrasqueira.valor;
+				cim.cidade					= tiCidade.text;
+				cim.complemento				= tiComplemento.text;
+				cim.cond_pgto				= tiCondPagamento.text;
+				cim.copa					= ckCopa.valor;
+				cim.cozinha					= ckCozinha.valor;
+				cim.data_cadastro			= new Date();
+				cim.dep_empregada			= ckDepEmpregada.valor;	
+				cim.email_contato			= tiEmailContato.text;
+				cim.endereco				= tiRua.text;
+				cim.estado					= tiEstado.text;
+				cim.finalidade				= cmbFinalidade.selectedItem.tipo;
+				cim.financiado				= ckFinanciado.valor;
+				//cim.garagem				= 
+				cim.num_dormitorios 		= Number(tiDomitorios.text);
+				cim.num_suites				= Number(tiSuites.text);
+				cim.num_vagas_garagem		= Number(tiGaragem.text);
+				cim.numero					= tiNumero.text;
+				cim.objetivo				= cmbObjetivo.selectedItem.tipo;
+				cim.observacao				= tiObservacao.text;
+				cim.permite_placa			= ckPermitePlaca.valor;
+				cim.pscina					= ckPscina.valor;
+				cim.sala_estar				= ckSalaEstar.valor;
+				cim.sala_jantar				= ckSalaJantar.valor;
+				cim.sala_tv					= ckSalaTv.valor;
+				cim.tipo_imovel				= cmbTipoImovel.selectedItem.tipo;
+				cim.topografia				= cmbTopografia.selectedItem.tipo;
+				cim.valor_condominio		= Number(tiValorCondominio.text);
+				cim.valor_iptu				= Number(tiValorIptu.text); 
+				cim.valor_locacao			= Number(tiValorLocacao.text);
+				cim.valor_venda				= Number(tiValorVenda.text);
 				
 				//Função update dos itens no Banco
 				_cont.destinationAlternativo = "Cadastro";
-				_cont.executeLocal("CadUsuarioAlterar", [cum], onAfterUpdate,this, "dataSet",true);
-			}else{
-				Alert.show('As senhas não conferem!!','Atenção');
-			}	
-			
+				_cont.executeLocal("CadImoveisAlterar", [cim], onAfterUpdate,this, "dataSet",true);			
 		}
 		
 		private function onAfterUpdate(e:ResultEvent):void{
@@ -266,7 +265,7 @@
 			
 			//lista depois da alteração
 			_cont.destinationAlternativo = "Cadastro";
-			_cont.executeLocal("CadUsuarioListar",[],onAfterListar,this,"dataSet",true);
+			_cont.executeLocal("CadImoveisListar",[],onAfterListar,this,"dataSet",true);
 		}
 			
 		
@@ -290,7 +289,7 @@
 			
 			//Executa busca no Banco
 			_cont.destinationAlternativo = "Cadastro";
-			_cont.executeLocal("CadUsuarioListar",[],onAfterListar,this,"dataSet",true);
+			_cont.executeLocal("CadImoveisListar",[],onAfterListar,this,"dataSet",true);
 		}
 			
 		private function onAfterListar(e:ResultEvent):void{
@@ -318,28 +317,40 @@
 				btnBuscar.enabled 			= false;
 			
 				//preenche os campos com os dados vindos do datagrid
-				tiId.text = dataGrid.selectedItem.id_usuario;
-				tiRua.text = dataGrid.selectedItem.endereco;
-				tiRespostaKeyMessenger.text = dataGrid.selectedItem.resposta_mensagem_chave;
-				tiCelular.text = dataGrid.selectedItem.celular;
-				tiCidade.text = dataGrid.selectedItem.cidade;
-				tiEstado.text = dataGrid.selectedItem.estado;
-				tiCpf.text = dataGrid.selectedItem.cpf;
-				tiNome.text = dataGrid.selectedItem.nome;
-				cmbKeyMessenger.selecionarItemDoCombo(dataGrid.selectedItem.id_mensagem_chave);
-				cmbCargo.selecionarItemDoCombo(dataGrid.selectedItem.id_cargo);
-				cmbStatusUser.selecionarItemDoCombo(dataGrid.selectedItem.id_status_usuario);
-				tiSobrenome.text = dataGrid.selectedItem.sobrenome;
-				tiNick.text = dataGrid.selectedItem.nick;
-				tiNumero.text = dataGrid.selectedItem.numero;
-				tiSenha.text = dataGrid.selectedItem.senha;
-				tiConfirmaSenha.text = dataGrid.selectedItem.senha;
-				tiTelefone.text = dataGrid.selectedItem.telefone;
-				tiBairro.text = dataGrid.selectedItem.bairro;
-				tiRg.text = dataGrid.selectedItem.rg;
-				tiCep.text = dataGrid.selectedItem.cep;
-				tiPais.text = dataGrid.selectedItem.pais;
-				tiRamal.text = dataGrid.selectedItem.ramal;
+				tiAreaConstruida.text 	= String(dataGrid.selectedItem.area_construida);		
+				ckAreaServico.setarValor(dataGrid.selectedItem.area_servico);
+				tiAreaTerreno.text    	= String(dataGrid.selectedItem.area_terreno);
+				tiAreaUtil.text			= String(dataGrid.selectedItem.area_util);	
+				tiBairro.text			= dataGrid.selectedItem.bairro;
+				ckChurrasqueira.setarValor(dataGrid.selectedItem.churrasqueira);
+				tiCidade.text			= dataGrid.selectedItem.cidade;
+				tiComplemento.text		= dataGrid.selectedItem.complemento;
+				tiCondPagamento.text	= dataGrid.selectedItem.cond_pgto;
+				ckCopa.setarValor(dataGrid.selectedItem.copa);	
+				ckCozinha.setarValor(dataGrid.selectedItem.cozinha);
+				ckDepEmpregada.setarValor(dataGrid.selectedItem.dep_empregada);
+				tiEmailContato.text 	= dataGrid.selectedItem.email_contato;
+				tiRua.text				= dataGrid.selectedItem.endereco;
+				tiEstado.text			= dataGrid.selectedItem.estado;		
+				cmbFinalidade.selecionarItemDoCombo(dataGrid.selectedItem.finalidade);
+				ckFinanciado.setarValor(dataGrid.selectedItem.financiado);
+				tiDomitorios.text       = String(dataGrid.selectedItem.num_dormitorios);
+				tiSuites.text			= String(dataGrid.selectedItem.num_suites);
+				tiGaragem.text			= String(dataGrid.selectedItem.num_vagas_garagem);
+				tiNumero.text			= dataGrid.selectedItem.numero;
+				cmbObjetivo.selecionarItemDoCombo(dataGrid.selectedItem.objetivo);
+				tiObservacao.text		= dataGrid.selectedItem.observacao;
+				ckPermitePlaca.setarValor(dataGrid.selectedItem.permite_placa);
+				ckPscina.setarValor(dataGrid.selectedItem.pscina);
+				ckSalaEstar.setarValor(dataGrid.selectedItem.sala_estar);
+				ckSalaJantar.setarValor(dataGrid.selectedItem.sala_jantar);
+				ckSalaTv.setarValor(dataGrid.selectedItem.sala_tv);
+				cmbTipoImovel.selecionarItemDoCombo(dataGrid.selectedItem.tipo_imovel);
+				cmbTopografia.selecionarItemDoCombo(dataGrid.selectedItem.topografia);
+				tiValorCondominio.text  = String(dataGrid.selectedItem.valor_condominio);
+				tiValorIptu.text 		= String(dataGrid.selectedItem.valor_iptu);
+				tiValorLocacao.text		= String(dataGrid.selectedItem.valor_locacao);
+				tiValorVenda.text		= String(dataGrid.selectedItem.valor_venda);
 				
 			}else{
 				lbInfo.setStyle("color" , "Red");
@@ -367,14 +378,14 @@
 			if (event.detail == Alert.YES){
 				//executa exclusao no banco
 				_cont.destinationAlternativo = "Cadastro";
-				_cont.executeLocal("CadUsuarioExcluir",[dataGrid.selectedItem.id_usuario],onAfterExcluir,this,"dataSet",true);
+				_cont.executeLocal("CadImoveisExcluir",[dataGrid.selectedItem.id_imovel],onAfterExcluir,this,"dataSet",true);
 			}
 		}
 			
 		private function onAfterExcluir(e:ResultEvent):void{
 			//lista depois de excluir
 			_cont.destinationAlternativo = "Cadastro";
-			_cont.executeLocal("CadUsuarioListar",[],onAfterListar,this,"dataSet",true);
+			_cont.executeLocal("CadImovelListar",[],onAfterListar,this,"dataSet",true);
 		}
 		
 		//Função novo registro
@@ -434,16 +445,10 @@
 	<mx:DateFormatter id="_dfFormatador" formatString="DD/MM/YYYY J:NN:SS"  />
 	
 	<mx:HBox height="64" left="10" right="10" top="10">
-		<mx:Button id="btnNovo" label="Novo" height="100%" width="75" click="onClickNovo()" labelPlacement="bottom">
-			<mx:icon>@Embed(source='../../../../assets/Icons/Icons 32X32/new.png')</mx:icon>
-		</mx:Button>
-		<mx:Button id="btnSalvar" label="Salvar" height="100%" click="onClickSave()" icon="@Embed(source='../../../../assets/Icons/Icons 32X32/accept.png')" labelPlacement="bottom" width="75"/>
-		<mx:Button id="btnCancelar" label="Cancelar" height="100%" click="onClickCancel()" labelPlacement="bottom" width="75">
-			<mx:icon>@Embed(source='../../../../assets/Icons/Icons 32X32/cancel.png')</mx:icon>
-		</mx:Button>
-		<mx:Button id="btnBuscar" label="Buscar" height="100%" click="onlist()" labelPlacement="bottom" width="75">
-			<mx:icon>@Embed(source='../../../../assets/Icons/Icons 32X32/search.png')</mx:icon>
-		</mx:Button>
+		<mx:Button id="btnNovo" label="Novo" height="100%" width="75" click="onClickNovo()" labelPlacement="bottom"/>
+		<mx:Button id="btnSalvar" label="Salvar" height="100%" click="onClickSave()" labelPlacement="bottom" width="75"/>
+		<mx:Button id="btnCancelar" label="Cancelar" height="100%" click="onClickCancel()" labelPlacement="bottom" width="75"/>
+		<mx:Button id="btnBuscar" label="Buscar" height="100%" click="onlist()" labelPlacement="bottom" width="75"/>
 	</mx:HBox>
 	<mx:Canvas id="CanvasDg" x="0" y="73" width="100%" height="310" visible="false" top="82" left="0" bottom="29" styleName="DataGrid">
 		<mx:DataGrid id="dataGrid" dataProvider="{this.dataSet}" y="0" height="100%" right="10" left="10"
@@ -463,28 +468,41 @@
 	<mx:TabNavigator right="10" bottom="29" top="82" left="10" backgroundAlpha="0.0" id="tnUser" color="#FFFFFF" cornerRadius="8" borderColor="#000000" backgroundColor="#A7A4A4">
 		<mx:Canvas label="Dados Imovel" width="100%" height="100%" backgroundAlpha="1.0" alpha="1.0" id="CanvasForm1">
 			<ns1:TextImputCustom x="10" y="29" width="89" editable="false" id="tiId" color="#000000"/>
-			<ns1:TextImputCustom x="425" y="273" width="249" id="tiNome" Requerido="true" color="#000000"/>
 			<mx:Label x="10" y="10" text="ID" fontWeight="bold"/>
-			<mx:Label x="10" y="59" text="Nome" fontWeight="bold"/>
-			<ns1:TextImputCustom x="10" y="128" width="179" id="tiRg" Requerido="true" color="#000000"/>
-			<ns1:TextImputCustom x="197" y="128" width="179" id="tiCpf" Requerido="true" color="#000000"/>
-			<mx:Label x="197" y="110" text="CPF" fontWeight="bold"/>
-			<mx:Label x="10" y="110" text="RG" fontWeight="bold"/>
-			<ns1:TextImputCustom x="10" y="176" width="207" id="tiTelefone" Requerido="true" color="#000000"/>
-			<ns1:TextImputCustom x="225" y="176" width="207" id="tiCelular" Requerido="true" color="#000000"/>
-			<ns1:TextImputCustom x="440" y="176" width="122" id="tiRamal" Requerido="true" color="#000000"/>
-			<mx:Label x="225" y="158" text="Celular" fontWeight="bold"/>
-			<mx:Label x="440" y="158" text="Ramal" fontWeight="bold"/>
-			<mx:Label x="10" y="158" text="Telefone" fontWeight="bold"/>
-			<mx:Label x="10" y="206" text="Cargo" fontWeight="bold"/>
-			<ns1:TextImputCustom x="10" y="273" width="407" id="tiSobrenome" Requerido="true" color="#000000"/>
-			<mx:Label x="10" y="255" text="Sobrenome" fontWeight="bold"/>
-			<ns1:ComBoxCustom x="10" y="225" width="310" id="cmbCargo" dataProvider="{Position}" labelField="cargo" ComboKey="id_cargo" color="#000000"
-				prompt="Selecione o Cargo"></ns1:ComBoxCustom>
+			<mx:Label x="10" y="63" text="Tipo Imovel" fontWeight="bold"/>
+			<ns1:TextImputCustom x="10" y="128" width="97" id="tiAreaTerreno" Requerido="true" color="#000000"/>
+			<ns1:TextImputCustom x="115" y="128" width="97" id="tiAreaConstruida" Requerido="true" color="#000000"/>
+			<mx:Label x="115" y="110" text="Area Construida" fontWeight="bold"/>
+			<ns1:TextImputCustom x="220" y="128" width="97" id="tiAreaUtil" Requerido="true" color="#000000"/>
+			<mx:Label x="220" y="110" text="Area Util" fontWeight="bold"/>
+			<mx:Label x="10" y="110" text="Area do Terreno" fontWeight="bold"/>
+			<ns1:TextImputCustom x="10" y="176" width="73" id="tiDomitorios" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="158" text="Dormitorios" fontWeight="bold"/>
+			<mx:Label x="10" y="257" text="Observação" fontWeight="bold"/>
+			<ns1:TextImputCustom x="91" y="176" width="73" id="tiSuites" Requerido="true" color="#000000"/>
+			<mx:Label x="91" y="158" text="Suites" fontWeight="bold"/>
+			<ns1:TextImputCustom x="172" y="176" width="73" id="tiGaragem" Requerido="true" color="#000000"/>
+			<mx:Label x="172" y="158" text="Garagem" fontWeight="bold"/>
 			<ns1:ComBoxCustom x="10" y="80" width="286" id="cmbTipoImovel" dataProvider="{_dados.tipoImoveis}" labelField="tipo" ComboKey="tipo" color="#000000"
 				prompt="Selecione o Tipo do Imovel"></ns1:ComBoxCustom>
+			<mx:Label x="304" y="63" text="Finalidade" fontWeight="bold"/>
+			<ns1:ComBoxCustom x="304" y="80" width="286" id="cmbFinalidade" dataProvider="{_dados.finalidadeImovel}" labelField="tipo" ComboKey="tipo" color="#000000"
+				prompt="Selecione a Finalidade do Imovel"></ns1:ComBoxCustom>
+			<mx:Label x="325" y="110" text="Topografia" fontWeight="bold"/>
+			<ns1:ComBoxCustom x="325" y="127" width="265" id="cmbTopografia" dataProvider="{_dados.topografiaTerreno}" labelField="tipo" ComboKey="tipo" color="#000000"
+				prompt="Selecione a Topografia do Terreno"></ns1:ComBoxCustom>
+			<ns1:CheckBoxCustom x="10" y="206" label="Sala de Estar" width="122" fontWeight="bold" id="ckSalaEstar"/>
+			<ns1:CheckBoxCustom x="455" y="206" label="Dep Empregada" width="122" fontWeight="bold" id="ckDepEmpregada"/>
+			<ns1:CheckBoxCustom x="123" y="206" label="Copa" width="122" fontWeight="bold" id="ckCopa"/>
+			<ns1:CheckBoxCustom x="123" y="227" label="Cozinha" width="122" fontWeight="bold" id="ckCozinha"/>
+			<ns1:CheckBoxCustom x="220" y="227" label="Area de Serviço" width="122" fontWeight="bold" id="ckAreaServico"/>
+			<ns1:CheckBoxCustom x="338" y="206" label="Churrasqueira" width="122" fontWeight="bold" id="ckChurrasqueira"/>
+			<ns1:CheckBoxCustom x="338" y="227" label="Pscina" width="122" fontWeight="bold" id="ckPscina"/>
+			<ns1:CheckBoxCustom x="220" y="206" label="Sala de Tv" width="122" fontWeight="bold" id="ckSalaTv"/>
+			<ns1:CheckBoxCustom x="10" y="227" label="Sala de Jantar" width="122" fontWeight="bold" id="ckSalaJantar"/>
+			<ns1:TextAreaCustom x="10" y="275" width="580" id="tiObservacao"/>
 		</mx:Canvas>
-		<mx:Canvas label="Dados Residencia" width="100%" height="100%" id="CanvasForm2">
+		<mx:Canvas label="Localização" width="100%" height="100%" id="CanvasForm2">
 			<ns1:TextImputCustom x="10" y="67" width="570" id="tiRua" Requerido="true" color="#000000"/>
 			<mx:Label x="10" y="49" text="Rua" fontWeight="bold" />
 			<ns1:TextImputCustom x="10" y="18" width="155" id="tiCep" Requerido="true" color="#000000"/>
@@ -500,22 +518,27 @@
 			<ns1:TextImputCustom x="588" y="67" width="86" id="tiNumero" Requerido="true" color="#000000"/>
 			<mx:Label x="588" y="49" text="Numero" fontWeight="bold"/>
 			<mx:Button x="173" y="18" label="Localizar" click="onLocalizaCep()"/>
+			<ns1:TextImputCustom x="10" y="211" width="570" id="tiComplemento" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="193" text="Complemento" fontWeight="bold"/>
 		</mx:Canvas>
-		<mx:Canvas label="Dados Usurio" width="100%" height="100%" id="CanvasForm3">
-			<ns1:TextImputCustom x="10" y="28" width="249" id="tiNick" Requerido="true" color="#000000"/>
-			<mx:Label x="10" y="10" text="Nick" fontWeight="bold"/>
-			<ns1:TextImputCustom x="10" y="76" width="249" id="tiSenha" Requerido="true" displayAsPassword="true" color="#000000"/>
-			<mx:Label x="10" y="58" text="Senha" fontWeight="bold"/>
-			<ns1:TextImputCustom x="10" y="170" width="393" id="tiRespostaKeyMessenger" Requerido="true" color="#000000"/>
-			<mx:Label x="10" y="152" text="Resposta" fontWeight="bold"/>
-			<mx:Label x="10" y="106" text="Key Messenger" fontWeight="bold"/>
-			<ns1:TextImputCustom x="267" y="76" width="249" id="tiConfirmaSenha" Requerido="true" displayAsPassword="true" color="#000000"/>
-			<mx:Label x="267" y="58" text="Confirma Senha" fontWeight="bold"/>
-			<ns1:ComBoxCustom x="10" y="122" width="506" id="cmbKeyMessenger" dataProvider="{KeyMessenger}" labelField="mensagem_chave" ComboKey="id_mensagem_chave" color="#000000"
-				prompt="Selecione Mensagem Chave"></ns1:ComBoxCustom>
-			<mx:Label x="267" y="10" text="Status Usuario" fontWeight="bold"/>
-			<ns1:ComBoxCustom x="267" y="26" width="327" id="cmbStatusUser" dataProvider="{StatusUser}" labelField="status_usuario" ComboKey="id_status_usuario" color="#000000"
-				prompt="Selecione Status do Usuario"></ns1:ComBoxCustom>
+		<mx:Canvas label="Venda / Locação" width="100%" height="100%" id="CanvasForm3">
+			<ns1:TextImputCustom x="10" y="75" width="122" id="tiValorVenda" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="57" text="Valor Venda" fontWeight="bold"/>
+			<ns1:TextImputCustom x="10" y="123" width="512" id="tiCondPagamento" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="105" text="Cond Pagamento" fontWeight="bold"/>
+			<ns1:TextImputCustom x="140" y="75" width="122" id="tiValorLocacao" Requerido="true" color="#000000"/>
+			<mx:Label x="140" y="57" text="Valor Locação" fontWeight="bold"/>
+			<ns1:TextImputCustom x="270" y="75" width="122" id="tiValorCondominio" Requerido="true" color="#000000"/>
+			<mx:Label x="270" y="57" text="Valor Condominio" fontWeight="bold"/>
+			<ns1:TextImputCustom x="400" y="75" width="122" id="tiValorIptu" Requerido="true" color="#000000"/>
+			<mx:Label x="400" y="57" text="Valor IPTU" fontWeight="bold"/>
+			<ns1:CheckBoxCustom x="125" y="153" label="Permite Placa" width="122" fontWeight="bold" id="ckPermitePlaca"/>
+			<ns1:CheckBoxCustom x="10" y="153" label="Financiado" width="122" fontWeight="bold" id="ckFinanciado"/>
+			<mx:Label x="10" y="10" text="Objetivo" fontWeight="bold"/>
+			<ns1:ComBoxCustom x="10" y="27" width="286" id="cmbObjetivo" dataProvider="{_dados.objetivo}" labelField="tipo" ComboKey="tipo" color="#000000"
+				prompt="Selecione o Objetivo"></ns1:ComBoxCustom>
+			<ns1:TextImputCustom x="10" y="201" width="252" id="tiEmailContato" Requerido="true" color="#000000"/>
+			<mx:Label x="10" y="183" text="Email Contato" fontWeight="bold"/>
 		</mx:Canvas>
 	</mx:TabNavigator>
 	
