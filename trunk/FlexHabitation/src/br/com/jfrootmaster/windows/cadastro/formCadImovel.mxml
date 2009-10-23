@@ -212,6 +212,7 @@
 		//Função que altera os itens no banco	
 		private function onUpdate():void{
 			var cim:CadImoveisModelo        = new CadImoveisModelo();
+				cim 					    = CadImoveisModelo(dataGrid.selectedItem);
 				cim.area_construida			= tiAreaConstruida.text;		
 				cim.area_servico			= ckAreaServico.valor;
 				cim.area_terreno			= tiAreaTerreno.text;
@@ -454,9 +455,11 @@
 		<mx:DataGrid id="dataGrid" dataProvider="{this.dataSet}" y="0" height="100%" right="10" left="10"
 			doubleClickEnabled="true">
 			<mx:columns>
-				<mx:DataGridColumn headerText="ID" dataField="id_usuario" width="50"/>
-				<mx:DataGridColumn headerText="Nome" dataField="nome" width="150"/>
-				<mx:DataGridColumn headerText="Nick" dataField="nick"/>
+				<mx:DataGridColumn headerText="ID" dataField="id_imovel" width="50"/>
+				<mx:DataGridColumn headerText="Cidade" dataField="cidade" width="150"/>
+				<mx:DataGridColumn headerText="Objetivo" dataField="objetivo"/>
+				<mx:DataGridColumn headerText="Tipo Imovel" dataField="tipo_imovel"/>
+				<mx:DataGridColumn headerText="Finalidade" dataField="finalidade"/>
 				<mx:DataGridColumn headerText="##" width="35" itemRenderer="br.com.jfrootmaster.itemrenderers.IrEditar"/>
 				<mx:DataGridColumn headerText="##" width="35" itemRenderer="br.com.jfrootmaster.itemrenderers.IrExcluir"/>
 			</mx:columns>
@@ -465,7 +468,8 @@
 	<mx:Canvas height="21" right="10" left="10" borderStyle="solid" borderColor="#000000" cornerRadius="6" bottom="5">
 		<mx:Label id="lbInfo" text="Info" textAlign="center" fontWeight="bold" fontSize="11" height="100%" bottom="0" left="0" right="0"/>
 	</mx:Canvas>
-	<mx:TabNavigator right="10" bottom="29" top="82" left="10" backgroundAlpha="0.0" id="tnUser" color="#FFFFFF" cornerRadius="8" borderColor="#000000" backgroundColor="#A7A4A4">
+	<mx:TabNavigator right="10" bottom="29" top="82" left="10" backgroundAlpha="0.0" id="tnUser" color="#FFFFFF" cornerRadius="8" borderColor="#000000" backgroundColor="#A7A4A4"
+		visible="true" includeInLayout="true">
 		<mx:Canvas label="Dados Imovel" width="100%" height="100%" backgroundAlpha="1.0" alpha="1.0" id="CanvasForm1">
 			<ns1:TextImputCustom x="10" y="29" width="89" editable="false" id="tiId" color="#000000"/>
 			<mx:Label x="10" y="10" text="ID" fontWeight="bold"/>
