@@ -58,7 +58,7 @@ public class VendasTeste {
 		   
 			   System.out.println("Listando apos incluir....");
 			   CadImoveis ci = new CadImoveis();
-			   ci.buscarImovel(0, "", "", "SAO CAETANO DO SUL", "", "", "",0,0,0,0,0,0);
+			   ci.buscarImovel(0, "", "", "SAO CAETANO DO SUL", "", "", "VENDA",0,0,0,0,0,0);
 			   
 			}
 		  }

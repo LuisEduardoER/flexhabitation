@@ -13,7 +13,24 @@ package br.com.jfrootmaster.dataprovider{
 				{tipo:"KiNet", id:'4'},
 				{tipo:"Galpão", id:'5'},
 				{tipo:"Terreno", id:'6'}
-			]);
+		]);
+		
+		public var finalidadeImovel:ArrayCollection = new ArrayCollection(
+				[ {tipo:"Residencial", id:'1'},
+				{tipo:"Comercial", id:'2'},
+				{tipo:"Temporada", id:'3'}
+		]);
+		
+		public var topografiaTerreno:ArrayCollection = new ArrayCollection(
+				[ {tipo:"Aclive", id:'1'},
+				{tipo:"Declive", id:'2'},
+				{tipo:"Plano", id:'3'}
+		]);
+		
+		public var objetivo:ArrayCollection = new ArrayCollection(
+				[ {tipo:"Locação", id:'1'},
+				{tipo:"Venda", id:'2'}
+		]);
 			
 		public var status:ArrayCollection = new ArrayCollection(
 			[ {tipo:"Ativo", id:'1'},

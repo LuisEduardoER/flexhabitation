@@ -14,15 +14,6 @@ public class Cadastro {
 		return new CadUsuario().listar();
 	}
 
-//	public List<CadUsuario> CadUsuarioIncluir(CadUsuario id) {
-//		try {
-//			id.setPassword(Cryptography.encrypt(id.getPassword()));
-//		} catch (NoSuchAlgorithmException e) {
-//			e.printStackTrace();
-//		}
-//		new CadUsuario().incluir(id);
-//		return CadUsuarioListar();
-//	}
 	private CadUsuario cu = new CadUsuario();
 	public CadUsuario CadUsuarioIncluir(CadUsuario id) {
 	try {
@@ -74,35 +65,35 @@ public class Cadastro {
 	}
 //Fim CadUsuario//
 	
-//Inicio CadPosition//	
-	public List<CadCargo> CadCargoListar() {
-		return new CadCargo().listar();
+//Inicio CadImoveis//	
+	public List<CadImoveis> CadImoveisListar() {
+		return new CadImoveis().listar();
 	}
 	
-	private CadCargo cp = new CadCargo();
-	public CadCargo CadCargoIncluir(CadCargo obj) {
+	private CadImoveis cp = new CadImoveis();
+	public CadImoveis CadImoveisIncluir(CadImoveis obj) {
 		
-		CadCargo CadCargo = cp.incluir(obj); 
+		CadImoveis CadImoveis = cp.incluir(obj); 
 		
-		return CadCargo;
+		return CadImoveis;
 	}
 	
-	public List<CadCargo> CadCargoAlterar(CadCargo id) {
-		new CadCargo().alterar(id);
+	public List<CadImoveis> CadImoveisAlterar(CadImoveis id) {
+		new CadImoveis().alterar(id);
 
-		return CadCargoListar();
+		return CadImoveisListar();
 	}
 	
-	public List<CadCargo> CadCargoExcluir(CadCargo obj) {
+	public List<CadImoveis> CadImoveisExcluir(CadImoveis obj) {
 		try{
-			new CadCargo().excluir(obj);
-			return CadCargoListar();
+			new CadImoveis().excluir(obj);
+			return CadImoveisListar();
 		} catch (Exception e) {
 			return null;
 		}
 
 	}
-	//Fim CadCargo//
+	//Fim CadImoveis//
 
 	//Inicio CadKeyMessenger//	
 	public List<CadMensagemChave> CadMensagemChaveListar() {
